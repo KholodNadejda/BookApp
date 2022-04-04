@@ -84,16 +84,22 @@ class PdfAddFragment : Fragment() {
         description = binding.descriptionEt.text.toString().trim()
         category = binding.categoryTv.text.toString().trim()
 
-        if (title.isEmpty()) {
-            Toast.makeText(requireActivity(), "Enter Title", Toast.LENGTH_SHORT).show()
-        } else if (description.isEmpty()) {
-            Toast.makeText(requireActivity(), "Enter Description", Toast.LENGTH_SHORT).show()
-        } else if (category.isEmpty()) {
-            Toast.makeText(requireActivity(), "Enter Category", Toast.LENGTH_SHORT).show()
-        } else if (pdfUri == null) {
-            Toast.makeText(requireActivity(), "Pick PDF", Toast.LENGTH_SHORT).show()
-        } else {
-            uploadPdfToStorage()
+        when {
+            title.isEmpty() -> {
+                Toast.makeText(requireActivity(), "Enter Title", Toast.LENGTH_SHORT).show()
+            }
+            description.isEmpty() -> {
+                Toast.makeText(requireActivity(), "Enter Description", Toast.LENGTH_SHORT).show()
+            }
+            category.isEmpty() -> {
+                Toast.makeText(requireActivity(), "Enter Category", Toast.LENGTH_SHORT).show()
+            }
+            pdfUri == null -> {
+                Toast.makeText(requireActivity(), "Pick PDF", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                uploadPdfToStorage()
+            }
         }
     }
 

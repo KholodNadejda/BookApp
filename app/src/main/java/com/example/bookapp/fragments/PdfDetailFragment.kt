@@ -30,7 +30,6 @@ class PdfDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentPdfDetailBinding
     private var bookId = ""
-
     private var bookTitle = ""
     private var bookUrl = ""
 
@@ -145,7 +144,7 @@ class PdfDetailFragment : Fragment() {
         ref.child(bookId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var downloadsCount = "${snapshot.child("downloadsCount").value}"
+                    var downloadsCount = "${snapshot.child("downloadCount").value}"
                     Log.d(TAG, "onDataChange: current downloads count: $downloadsCount")
                     if (downloadsCount == "" || downloadsCount == "null") {
                         downloadsCount = "0"
@@ -159,7 +158,7 @@ class PdfDetailFragment : Fragment() {
                     Log.d(TAG, "onDataChange: new downloads count: $newDownloadCount")
 
                     val hashMap: HashMap<String, Any> = HashMap()
-                    hashMap["downloadsCount"] = newDownloadCount
+                    hashMap["downloadCount"] = newDownloadCount
 
                     val dbRef = FirebaseDatabase.getInstance().getReference("Books")
                     dbRef.child(bookId)
@@ -185,7 +184,7 @@ class PdfDetailFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val categoryId = "${snapshot.child("categoryId").value}"
                     val description = "${snapshot.child("description").value}"
-                    val downloadsCount = "${snapshot.child("downloadsCount").value}"
+                    val downloadsCount = "${snapshot.child("downloadCount").value}"
                     val timestamp = "${snapshot.child("timestamp").value}"
                     bookTitle = "${snapshot.child("title").value}"
                     val uid = "${snapshot.child("uid").value}"
