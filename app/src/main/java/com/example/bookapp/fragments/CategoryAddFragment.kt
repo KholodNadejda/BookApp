@@ -7,26 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import com.example.bookapp.AddCategoryRepositoryImpl
+import com.example.bookapp.viewModel.AddCategoryViewModel
+import com.example.bookapp.ViewModelFactory.AddCategoryViewModelFactory
 import com.example.bookapp.MyApplication
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentCategoryAddBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 
 class CategoryAddFragment : Fragment() {
 
     private lateinit var binding: FragmentCategoryAddBinding
-    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
-
+    private lateinit var viewModel: AddCategoryViewModel
+    private lateinit var addCategoryRepositoryImpl: AddCategoryRepositoryImpl
     private var category = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCategoryAddBinding.inflate(layoutInflater)
-        firebaseAuth = FirebaseAuth.getInstance()
+
         progressDialog = ProgressDialog(requireActivity())
         progressDialog.setTitle("Please wait")
         progressDialog.setCanceledOnTouchOutside(false)
@@ -42,7 +44,6 @@ class CategoryAddFragment : Fragment() {
                 validateData()
             }
         }
-
         return binding.root
     }
 
@@ -56,29 +57,13 @@ class CategoryAddFragment : Fragment() {
     }
 
     private fun addCategoryFirebase() {
+        addCategoryRepositoryImpl = AddCategoryRepositoryImpl(category)
+        viewModel = ViewModelProvider(this, AddCategoryViewModelFactory(addCategoryRepositoryImpl))[AddCategoryViewModel::class.java]
         progressDialog.show()
-        val timestamp = System.currentTimeMillis()
-        val hashMap: HashMap<String, Any?> = HashMap()
-        hashMap["id"] = "$timestamp"
-        hashMap["category"] = category
-        hashMap["timestamp"] = timestamp
-        hashMap["uid"] = "${firebaseAuth.uid}"
-
-        val ref = FirebaseDatabase.getInstance().getReference("Categories")
-        ref.child("$timestamp")
-            .setValue(hashMap)
-            .addOnSuccessListener {
-                progressDialog.dismiss()
-                Toast.makeText(requireActivity(), "Add successfully", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                progressDialog.dismiss()
-                Toast.makeText(
-                    requireActivity(),
-                    "Failed to add due to ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        viewModel.modelsLiveData.observe(viewLifecycleOwner){
+            Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+        }
+        progressDialog.dismiss()
     }
 
     companion object {

@@ -9,9 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.example.bookapp.MyApplication
+import com.example.bookapp.ViewModelFactory.*
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentPdfEditBinding
+import com.example.bookapp.repository.UpdatePdfRepositoryImpl
+import com.example.bookapp.repository.LoadBookInfoRepositoryImpl
+import com.example.bookapp.repository.LoadCategoriesRepositoryImpl
+import com.example.bookapp.viewModel.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -28,13 +34,24 @@ class PdfEditFragment : Fragment() {
     private var description = ""
     private lateinit var categoryTitleArrayList: ArrayList<String>
     private lateinit var categoryIdArrayList: ArrayList<String>
+    private lateinit var updatePdfViewModel: UpdatePdfViewModel
+    private lateinit var updatePdfRepositoryImpl: UpdatePdfRepositoryImpl
+
+    private lateinit var loadCategoriesRepositoryImpl: LoadCategoriesRepositoryImpl
+    private lateinit var loadCategoriesIdViewModel: LoadCategoriesIdViewModel
+    private lateinit var loadCategoriesTitleViewModel: LoadCategoriesTitleViewModel
+
+    private lateinit var loadBookInfoCategoryViewModel: LoadBookInfoCategoryViewModel
+    private lateinit var loadBookInfoDescriptionViewModel: LoadBookInfoDescriptionViewModel
+    private lateinit var loadBookInfoTitleViewModel: LoadBookInfoTitleViewModel
+    private lateinit var loadBookInfoRepositoryImpl: LoadBookInfoRepositoryImpl
 
     private lateinit var processDialog: ProgressDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentPdfEditBinding.inflate(layoutInflater)
 
@@ -68,7 +85,27 @@ class PdfEditFragment : Fragment() {
 
     private fun loadBookInfo() {
         Log.d(TAG, "loadBookInfo: Loading bool info")
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
+
+        loadBookInfoRepositoryImpl = LoadBookInfoRepositoryImpl(bookId)
+
+        loadBookInfoTitleViewModel = ViewModelProvider(this, LoadBookInfoTitleViewModelFactory(loadBookInfoRepositoryImpl)
+        )[LoadBookInfoTitleViewModel::class.java]
+        loadBookInfoDescriptionViewModel = ViewModelProvider(this, LoadBookInfoDescriptionViewModelFactory(loadBookInfoRepositoryImpl)
+        )[LoadBookInfoDescriptionViewModel::class.java]
+        loadBookInfoCategoryViewModel = ViewModelProvider(this, LoadBookInfoCategoryViewModelFactory(loadBookInfoRepositoryImpl)
+        )[LoadBookInfoCategoryViewModel::class.java]
+
+        loadBookInfoTitleViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            binding.titleEt.setText(it)
+        }
+        loadBookInfoDescriptionViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            binding.descriptionEt.setText(it)
+        }
+        loadBookInfoCategoryViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            binding.categoryTv.text = it
+        }
+
+       /* val ref = FirebaseDatabase.getInstance().getReference("Books")
         ref.child(bookId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -87,40 +124,51 @@ class PdfEditFragment : Fragment() {
                                 val category = snapshot.child("category").value
                                 binding.categoryTv.text = category.toString()
                             }
-
-                            override fun onCancelled(error: DatabaseError) {
-
-                            }
+                            override fun onCancelled(error: DatabaseError) { }
                         })
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-            })
+                override fun onCancelled(error: DatabaseError) {  }
+            })*/
     }
 
     private fun validateData() {
         title = binding.titleEt.text.toString().trim()
         description = binding.descriptionEt.text.toString().trim()
 
-        if (title.isEmpty()) {
-            Toast.makeText(requireActivity(), "Enter title", Toast.LENGTH_SHORT).show()
-        } else if (description.isEmpty()) {
-            Toast.makeText(requireActivity(), "Enter description", Toast.LENGTH_SHORT).show()
-        } else if (selectCategoryId.isEmpty()) {
-            Toast.makeText(requireActivity(), "Pick Category", Toast.LENGTH_SHORT).show()
-        } else {
-            updatePdf()
+        when {
+            title.isEmpty() -> {
+                Toast.makeText(requireActivity(), "Enter title", Toast.LENGTH_SHORT).show()
+            }
+            description.isEmpty() -> {
+                Toast.makeText(requireActivity(), "Enter description", Toast.LENGTH_SHORT).show()
+            }
+            selectCategoryId.isEmpty() -> {
+                Toast.makeText(requireActivity(), "Pick Category", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                updatePdf()
+            }
         }
     }
 
     private fun updatePdf() {
-        Log.d(TAG, "updatePdf: Starting updating pdf info...")
-
         processDialog.setMessage("Updating book info")
         processDialog.show()
 
+        updatePdfRepositoryImpl = UpdatePdfRepositoryImpl(bookId, title, description, selectCategoryId)
+        updatePdfViewModel = ViewModelProvider(this, UpdatePdfViewModelFactory(updatePdfRepositoryImpl)
+        )[UpdatePdfViewModel::class.java]
+
+        updatePdfViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            processDialog.dismiss()
+            Toast.makeText(
+                requireActivity(),
+                it,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+      /*Log.d(TAG, "updatePdf: Starting updating pdf info...")
         val hashMap = HashMap<String, Any>()
         hashMap["title"] = "$title"
         hashMap["description"] = "$description"
@@ -142,7 +190,7 @@ class PdfEditFragment : Fragment() {
                     "Failed to update due to ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-            }
+            }*/
     }
 
     private fun categoryDialog() {
@@ -164,12 +212,23 @@ class PdfEditFragment : Fragment() {
     }
 
     private fun loadCategories() {
-        Log.d(TAG, "loadCategories: loading Categories...")
-
+        //Log.d(TAG, "loadCategories: loading Categories...")
         categoryTitleArrayList = ArrayList()
         categoryIdArrayList = ArrayList()
 
-        val ref = FirebaseDatabase.getInstance().getReference("Categories")
+        loadCategoriesRepositoryImpl = LoadCategoriesRepositoryImpl()
+        loadCategoriesIdViewModel = ViewModelProvider(this, LoadCategoriesIdViewModelFactory(loadCategoriesRepositoryImpl)
+        )[LoadCategoriesIdViewModel::class.java]
+        loadCategoriesTitleViewModel = ViewModelProvider(this, LoadCategoriesTitleViewModelFactory(loadCategoriesRepositoryImpl)
+        )[LoadCategoriesTitleViewModel::class.java]
+
+        loadCategoriesIdViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            categoryIdArrayList = it
+        }
+        loadCategoriesTitleViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            categoryTitleArrayList = it
+        }
+       /* val ref = FirebaseDatabase.getInstance().getReference("Categories")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 categoryIdArrayList.clear()
@@ -187,12 +246,12 @@ class PdfEditFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {}
-        })
+        })*/
     }
 
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) = PdfEditFragment()
-        private const val TAG = "PDF_EDIT_TAG"
+        const val TAG = "PDF_EDIT_TAG"
     }
 }

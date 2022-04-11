@@ -8,20 +8,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentLoginBinding
+import com.example.bookapp.repository.LoginUserRepositoryImpl
+import com.example.bookapp.viewModel.LoginUserViewModel
+import com.example.bookapp.ViewModelFactory.LoginUserViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
-
+    private lateinit var loginUserViewModel: LoginUserViewModel
+    private lateinit var loginUserRepositoryImpl: LoginUserRepositoryImpl
     private var email = ""
     private var password = ""
 
@@ -68,9 +69,33 @@ class LoginFragment : Fragment() {
     }
 
     private fun loginUser() {
+        loginUserRepositoryImpl = LoginUserRepositoryImpl(email, password)
+        loginUserViewModel = ViewModelProvider(this, LoginUserViewModelFactory(loginUserRepositoryImpl)
+        )[LoginUserViewModel::class.java]
+
         progressDialog.setMessage("Loggin in...")
         progressDialog.show()
-        firebaseAuth.signInWithEmailAndPassword(email, password)
+
+        loginUserViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            progressDialog.dismiss()
+            when (it) {
+                "user" -> {
+                    navigator().showDashboardUserFragment()
+                }
+                "admin" -> {
+                    navigator().showDashboardAdminFragment()
+                }
+                else -> {
+                    Toast.makeText(
+                        requireActivity(),
+                        it,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+        /*firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 checkUser()
             }
@@ -81,10 +106,10 @@ class LoginFragment : Fragment() {
                     "Login failed due to ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-            }
+            }*/
     }
 
-    private fun checkUser() {
+   /* private fun checkUser() {
         progressDialog.setMessage("Checking user...")
 
         val firebaseUser = firebaseAuth.currentUser!!
@@ -103,7 +128,7 @@ class LoginFragment : Fragment() {
                     }
                 }
             })
-    }
+    }*/
 
     companion object {
         @JvmStatic

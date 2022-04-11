@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-
+  //savedInstanceState =0
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainerView, MainFragment.newInstance()).commit()
     }

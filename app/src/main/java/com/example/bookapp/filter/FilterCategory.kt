@@ -5,11 +5,11 @@ import com.example.bookapp.adapter.AdapterCategory
 import com.example.bookapp.model.ModelCategory
 
 class FilterCategory : Filter {
-    private var filterList: ArrayList<ModelCategory> //
+    private var filterList: List<ModelCategory> //
     private var adapterCategory: AdapterCategory //
 
     constructor(
-        filterList: ArrayList<ModelCategory>,
+        filterList: List<ModelCategory>,
         adapterCategory: AdapterCategory
     ) : super() { //
         this.filterList = filterList
@@ -38,7 +38,7 @@ class FilterCategory : Filter {
     }
 
     override fun publishResults(constraint: CharSequence?, results: FilterResults) { //
-        adapterCategory.categoryArrayList = results.values as ArrayList<ModelCategory>
+        adapterCategory.categoryList = results.values as ArrayList<ModelCategory>
         adapterCategory.notifyDataSetChanged()
     }
 }

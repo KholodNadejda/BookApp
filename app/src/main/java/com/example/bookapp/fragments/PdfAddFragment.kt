@@ -15,24 +15,27 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
+import com.example.bookapp.DashboardRepositoryImpl
 import com.example.bookapp.MyApplication
 import com.example.bookapp.model.ModelCategory
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentPdfAddBinding
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
+import com.example.bookapp.repository.UploadPdfToStorageRepositoryImpl
+import com.example.bookapp.viewModel.DashboardViewModel
+import com.example.bookapp.ViewModelFactory.DashboardViewModelFactory
+import com.example.bookapp.viewModel.UploadPdfToStorageViewModel
+import com.example.bookapp.ViewModelFactory.UploadPdfToStorageViewModelFactory
 
 class PdfAddFragment : Fragment() {
 
-    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var binding: FragmentPdfAddBinding
     private lateinit var progressDialog: ProgressDialog
-    private lateinit var categoryArrayList: ArrayList<ModelCategory>
+    private lateinit var categoryArrayList: List<ModelCategory>
+    private lateinit var viewModel: DashboardViewModel
+    private lateinit var dashboardRepositoryImpl: DashboardRepositoryImpl
+    private lateinit var uploadPdfToStorageViewModel: UploadPdfToStorageViewModel
+    private lateinit var uploadPdfToStorageRepositoryImpl: UploadPdfToStorageRepositoryImpl
     private var pdfUri: Uri? = null
     private val TAG = "PDF_ADD_TAG"
     private var selectedCategoryId = ""
@@ -45,9 +48,11 @@ class PdfAddFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentPdfAddBinding.inflate(layoutInflater)
-        firebaseAuth = FirebaseAuth.getInstance()
+
+        dashboardRepositoryImpl = DashboardRepositoryImpl()
+        viewModel = ViewModelProvider(this, DashboardViewModelFactory(dashboardRepositoryImpl))[DashboardViewModel::class.java]
 
         loadPdfCategories()
 
@@ -109,7 +114,20 @@ class PdfAddFragment : Fragment() {
         progressDialog.setMessage("Uploading PDF")
         progressDialog.show()
 
-        val timestamp = System.currentTimeMillis()
+        uploadPdfToStorageRepositoryImpl = UploadPdfToStorageRepositoryImpl(pdfUri, title, description, category, selectedCategoryId)
+        uploadPdfToStorageViewModel = ViewModelProvider(this, UploadPdfToStorageViewModelFactory(uploadPdfToStorageRepositoryImpl)
+        )[UploadPdfToStorageViewModel::class.java]
+
+        uploadPdfToStorageViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            progressDialog.dismiss()
+            Toast.makeText(
+                requireActivity(),
+                it,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+     /*   val timestamp = System.currentTimeMillis()
         val filePathAndName = "Books/$timestamp"
         val storageReference = FirebaseStorage.getInstance().getReference(filePathAndName)
         storageReference.putFile(pdfUri!!)
@@ -130,10 +148,10 @@ class PdfAddFragment : Fragment() {
                     "Failed to upload due to ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-            }
+            }*/
     }
 
-    private fun uploadPdfInfoToDb(uploadedPdfUri: String, timestamp: Long) {
+   /* private fun uploadPdfInfoToDb(uploadedPdfUri: String, timestamp: Long) {
         Log.d(TAG, "uploadPdfInfoToDb: upload To Db")
         progressDialog.setMessage("Uploading Pdf Info")
 
@@ -167,10 +185,14 @@ class PdfAddFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-    }
+    }*/
 
     private fun loadPdfCategories() {
-        Log.d(TAG, "loadPdfCategories: Load Pdf Categories")
+
+        viewModel.modelsLiveData.observe(viewLifecycleOwner){
+            categoryArrayList = it
+        }
+        /*Log.d(TAG, "loadPdfCategories: Load Pdf Categories")
         categoryArrayList = ArrayList()
 
         val ref = FirebaseDatabase.getInstance().getReference("Categories")
@@ -187,7 +209,7 @@ class PdfAddFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {
 
             }
-        })
+        })*/
     }
 
     private fun categoryPickDialog() {

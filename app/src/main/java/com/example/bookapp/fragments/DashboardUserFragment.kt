@@ -1,7 +1,6 @@
 package com.example.bookapp.fragments
 
 import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,31 +9,52 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.example.bookapp.MyApplication
+import com.example.bookapp.ViewModelFactory.CheckUserNameViewModelFactory
+import com.example.bookapp.ViewModelFactory.LogoutUserViewModelFactory
+import com.example.bookapp.ViewModelFactory.ViewPagerAdapterViewModelFactory
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentDashboardUserBinding
 import com.example.bookapp.model.ModelCategory
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.bookapp.repository.CheckUserRepositoryImpl
+import com.example.bookapp.repository.ViewPagerAdapterRepositoryImpl
+import com.example.bookapp.viewModel.*
 
 
 class DashboardUserFragment : Fragment() {
 
     private lateinit var binding: FragmentDashboardUserBinding
-    private lateinit var firebaseAuth: FirebaseAuth
+   // private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var categoryArrayList: ArrayList<ModelCategory>
     private lateinit var viewPageAdapter: ViewPageAdapter
+    private lateinit var checkUserNameViewModel: CheckUserNameViewModel
+    private lateinit var checkUserRepositoryImpl: CheckUserRepositoryImpl
+    private lateinit var logoutUserNameViewModel: LogoutUserViewModel
+    private lateinit var viewPageAdapterViewModel: ViewPagerAdapterViewModel
+    private lateinit var viewPagerAdapterRepositoryImpl: ViewPagerAdapterRepositoryImpl
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDashboardUserBinding.inflate(layoutInflater)
-        firebaseAuth = FirebaseAuth.getInstance()
+        viewPageAdapter = ViewPageAdapter(
+            childFragmentManager,
+            FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+            requireActivity()
+        )
+        checkUserRepositoryImpl = CheckUserRepositoryImpl()
+        checkUserNameViewModel = ViewModelProvider(this,
+            CheckUserNameViewModelFactory(checkUserRepositoryImpl)
+        )[CheckUserNameViewModel::class.java]
+        viewPagerAdapterRepositoryImpl = ViewPagerAdapterRepositoryImpl(viewPageAdapter)
+        logoutUserNameViewModel = ViewModelProvider(this, LogoutUserViewModelFactory(checkUserRepositoryImpl))[LogoutUserViewModel::class.java]
+        viewPageAdapterViewModel = ViewModelProvider(this, ViewPagerAdapterViewModelFactory(viewPagerAdapterRepositoryImpl)
+        )[ViewPagerAdapterViewModel::class.java]
+
+       // firebaseAuth = FirebaseAuth.getInstance()
 
         checkUser()
         if(!MyApplication.hasConnection(requireActivity())){
@@ -45,20 +65,23 @@ class DashboardUserFragment : Fragment() {
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         binding.logOutBtn.setOnClickListener {
-            firebaseAuth.signOut()
-            navigator().goToStart()
+            logoutUserNameViewModel.modelsLiveData.observe(viewLifecycleOwner){
+                if (it == true){
+                    navigator().goToStart()
+                }
+            }
         }
 
         return binding.root
     }
 
     private fun setupWithViewPagerAdapter(viewPager: ViewPager) {
-        viewPageAdapter = ViewPageAdapter(
-            childFragmentManager,
-            FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
-            requireActivity()
-        )
-        categoryArrayList = ArrayList()
+
+        viewPageAdapterViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            viewPager.adapter = it
+        }
+
+      /*  categoryArrayList = ArrayList()
 
         val ref = FirebaseDatabase.getInstance().getReference("Categories")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -115,15 +138,12 @@ class DashboardUserFragment : Fragment() {
         //
         ref.keepSynced(true)
         //
-        viewPager.adapter = viewPageAdapter
+        viewPager.adapter = viewPageAdapter*/
     }
 
     private fun checkUser() {
-        val firebaseUser = firebaseAuth.currentUser
-        if (firebaseUser == null) {
-            binding.subTitleTv.text = "Not Logging In"
-        } else {
-            binding.subTitleTv.text = firebaseUser.email
+        checkUserNameViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            binding.subTitleTv.text = it
         }
     }
 

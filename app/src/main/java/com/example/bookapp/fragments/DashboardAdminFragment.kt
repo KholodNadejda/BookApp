@@ -1,7 +1,5 @@
 package com.example.bookapp.fragments
 
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,31 +8,42 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.example.bookapp.MyApplication
+import androidx.lifecycle.ViewModelProvider
+import com.example.bookapp.*
+import com.example.bookapp.ViewModelFactory.CheckUserNameViewModelFactory
+import com.example.bookapp.ViewModelFactory.DashboardViewModelFactory
+import com.example.bookapp.ViewModelFactory.LogoutUserViewModelFactory
 import com.example.bookapp.adapter.AdapterCategory
-import com.example.bookapp.model.ModelCategory
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentDashboardAdminBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.bookapp.repository.CheckUserRepositoryImpl
+import com.example.bookapp.viewModel.*
 
 class DashboardAdminFragment : Fragment() {
 
     private lateinit var binding: FragmentDashboardAdminBinding
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var categoryArrayList: ArrayList<ModelCategory>
     private lateinit var adapterCategory: AdapterCategory
+    private lateinit var viewModel: DashboardViewModel
+    private lateinit var checkUserNameViewModel: CheckUserNameViewModel
+    private lateinit var logoutUserNameViewModel: LogoutUserViewModel
+    private lateinit var dashboardRepositoryImpl: DashboardRepositoryImpl
+    private lateinit var checkUserRepositoryImpl: CheckUserRepositoryImpl
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDashboardAdminBinding.inflate(layoutInflater)
-        firebaseAuth = FirebaseAuth.getInstance()
+        dashboardRepositoryImpl = DashboardRepositoryImpl()
+        viewModel = ViewModelProvider(this, DashboardViewModelFactory(dashboardRepositoryImpl))[DashboardViewModel::class.java]
+        checkUserRepositoryImpl = CheckUserRepositoryImpl()
+        checkUserNameViewModel = ViewModelProvider(this,
+            CheckUserNameViewModelFactory(checkUserRepositoryImpl)
+        )[CheckUserNameViewModel::class.java]
+        logoutUserNameViewModel = ViewModelProvider(this, LogoutUserViewModelFactory(checkUserRepositoryImpl))[LogoutUserViewModel::class.java]
+
         checkUser()
+
         binding.addCategoryBtn.setOnClickListener {
             if(!MyApplication.hasConnection(requireActivity())){
                 Toast.makeText(requireActivity(), "Not internet connection", Toast.LENGTH_SHORT).show()
@@ -48,12 +57,16 @@ class DashboardAdminFragment : Fragment() {
                 Toast.makeText(requireActivity(), "Not internet connection", Toast.LENGTH_SHORT).show()
             } else {
                 navigator().showPdfAddFragment()
+
             }
         }
 
         binding.logOutBtn.setOnClickListener {
-            firebaseAuth.signOut()
-            checkUser()
+            logoutUserNameViewModel.modelsLiveData.observe(viewLifecycleOwner){
+                if (it == true){
+                    navigator().goToStart()
+                }
+            }
         }
 
         binding.searchEt.addTextChangedListener(object : TextWatcher {
@@ -64,7 +77,6 @@ class DashboardAdminFragment : Fragment() {
                     adapterCategory.filter.filter(p0)
                 } catch (e: Exception) { }
             }
-
             override fun afterTextChanged(p0: Editable?) {}
         })
 
@@ -74,34 +86,15 @@ class DashboardAdminFragment : Fragment() {
     }
 
     private fun loadCategories() {
-        categoryArrayList = ArrayList()
-        val ref = FirebaseDatabase.getInstance().getReference("Categories")
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                categoryArrayList.clear()
-                for (ds in snapshot.children) {
-                    val model = ds.getValue((ModelCategory::class.java))
-                    categoryArrayList.add(model!!)
-                }
-                adapterCategory = AdapterCategory(requireActivity(), categoryArrayList)
-                binding.categoriesRv.adapter = adapterCategory
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })
-        //
-        ref.keepSynced(true)
-        //
+        viewModel.modelsLiveData.observe(viewLifecycleOwner){
+            adapterCategory = AdapterCategory(requireActivity(), it)
+            binding.categoriesRv.adapter = adapterCategory
+        }
     }
 
     private fun checkUser() {
-        val firebaseUser = firebaseAuth.currentUser
-        if (firebaseUser == null) {
-            navigator().goToStart()
-        } else {
-            binding.subTitleTv.text = firebaseUser.email
+       checkUserNameViewModel.modelsLiveData.observe(viewLifecycleOwner){
+           binding.subTitleTv.text = it
         }
     }
 

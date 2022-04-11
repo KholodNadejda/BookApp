@@ -8,9 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.example.bookapp.MyApplication
+import com.example.bookapp.ViewModelFactory.CreateUserAccountViewModelFactory
+import com.example.bookapp.ViewModelFactory.UpdateUserInfoViewModelFactory
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentRegisterBinding
+import com.example.bookapp.repository.CreateUserAccountRepositoryImpl
+import com.example.bookapp.repository.UpdateUserInfoRepositoryImpl
+import com.example.bookapp.viewModel.CreateUserAccountViewModel
+import com.example.bookapp.viewModel.UpdateUserInfoViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -23,6 +30,12 @@ class RegisterFragment : Fragment() {
     private var name = ""
     private var email = ""
     private var password = ""
+
+    private lateinit var createUserAccountViewModel: CreateUserAccountViewModel
+    private lateinit var createUserAccountRepositoryImpl: CreateUserAccountRepositoryImpl
+
+    private lateinit var updateUserInfoViewModel: UpdateUserInfoViewModel
+    private lateinit var updateUserInfoRepositoryImpl: UpdateUserInfoRepositoryImpl
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,10 +84,22 @@ class RegisterFragment : Fragment() {
     }
 
     private fun createUserAccount() {
-        //  progressDialog.setMessage("Creating Account")
+        progressDialog.setMessage("Creating Account")
         progressDialog.show()
 
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
+        createUserAccountRepositoryImpl = CreateUserAccountRepositoryImpl(email, password)
+        createUserAccountViewModel = ViewModelProvider(this, CreateUserAccountViewModelFactory(createUserAccountRepositoryImpl)
+        )[CreateUserAccountViewModel::class.java]
+        createUserAccountViewModel.modelsLiveData.observe(viewLifecycleOwner) {
+            if( it == "Success") {
+                updateUserInfo()
+            } else {
+                progressDialog.dismiss()
+                Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        /*firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 updateUserInfo()
             }
@@ -85,12 +110,26 @@ class RegisterFragment : Fragment() {
                     "Failed creatin account due to ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-            }
+            }*/
     }
 
     private fun updateUserInfo() {
+        updateUserInfoRepositoryImpl = UpdateUserInfoRepositoryImpl(email, name)
+        updateUserInfoViewModel = ViewModelProvider(this, UpdateUserInfoViewModelFactory(updateUserInfoRepositoryImpl)
+        )[UpdateUserInfoViewModel::class.java]
 
-        val timestamp = System.currentTimeMillis()
+        updateUserInfoViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            if( it == "Success") {
+                progressDialog.dismiss()
+                Toast.makeText(requireActivity(), "Account created", Toast.LENGTH_SHORT).show()
+                navigator().showDashboardUserFragment()
+            } else {
+                progressDialog.dismiss()
+                Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+       /* val timestamp = System.currentTimeMillis()
         val uid = firebaseAuth.uid.toString()
         val hashMap: HashMap<String, Any?> = HashMap()
         hashMap["uid"] = uid
@@ -116,7 +155,7 @@ class RegisterFragment : Fragment() {
                     "Failed saving user info due to ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-            }
+            }*/
     }
 
     companion object {

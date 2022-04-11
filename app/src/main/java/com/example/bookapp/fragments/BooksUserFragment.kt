@@ -8,13 +8,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.example.bookapp.*
+import com.example.bookapp.ViewModelFactory.PdfListAllViewModelFactory
+import com.example.bookapp.ViewModelFactory.PdfListMostDownloadedViewModelFactory
+import com.example.bookapp.ViewModelFactory.PdfListViewModelFactory
 import com.example.bookapp.adapter.AdapterPdfUser
 import com.example.bookapp.databinding.FragmentBooksUserBinding
-import com.example.bookapp.model.ModelPdf
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.bookapp.viewModel.*
 import java.lang.Exception
 
 class BooksUserFragment : Fragment {
@@ -25,8 +26,12 @@ class BooksUserFragment : Fragment {
     private var category = ""
     private var uid = ""
 
-    private lateinit var pdfArrayList: ArrayList<ModelPdf>
     private lateinit var adapterPdfUser: AdapterPdfUser
+
+    private lateinit var viewModel: PdfListViewModel
+    private lateinit var viewModelMD: PdfListMostDownloadedViewModel
+    private lateinit var viewModelAll: PdfListAllViewModel
+
 
     constructor()
 
@@ -47,6 +52,12 @@ class BooksUserFragment : Fragment {
     ): View {
         binding = FragmentBooksUserBinding.inflate(layoutInflater, container, false)
 
+        viewModel = ViewModelProvider(this, PdfListViewModelFactory(PdfListRepositoryImpl(categoryId)))[PdfListViewModel::class.java]
+        //viewModelMD = ViewModelProvider(this, PdfListViewModelFactory(PdfListRepositoryImpl(categoryId)))[PdfListViewModel::class.java]
+        viewModelAll = ViewModelProvider(this, PdfListAllViewModelFactory(PdfListRepositoryImpl(categoryId)))[PdfListAllViewModel::class.java]
+        viewModelMD = ViewModelProvider(this, PdfListMostDownloadedViewModelFactory(PdfListRepositoryImpl(categoryId)))[PdfListMostDownloadedViewModel::class.java]
+
+
         when (category) {
             "All" -> {
                 loadAllBooks()
@@ -55,7 +66,10 @@ class BooksUserFragment : Fragment {
                  loadMostViewedBooks("viewedCount")
              }*/
             "Most Downloaded" -> {
-                loadMostDownloadedBooks("downloadsCount")
+                loadMostDownloadedBooks()
+            }
+            "MOST DOWNLOADED" -> {
+                loadMostDownloadedBooks()
             }
             else -> {
                 loadCategoriesBooks()
@@ -72,86 +86,36 @@ class BooksUserFragment : Fragment {
                     Log.d(PdfListAdminFragment.TAG, "onTextChange: ${e.message}")
                 }
             }
-
             override fun afterTextChanged(p0: Editable?) {}
         })
-
         return binding.root
     }
 
     private fun loadAllBooks() {
-        pdfArrayList = ArrayList()
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                pdfArrayList.clear()
-                for (ds in snapshot.children) {
-                    val model = ds.getValue(ModelPdf::class.java)
-                    pdfArrayList.add(model!!)
-                }
-                adapterPdfUser = AdapterPdfUser(context!!, pdfArrayList)
-                binding.booksRv.adapter = adapterPdfUser
-            }
-
-            override fun onCancelled(error: DatabaseError) {}
-        })
+        viewModelAll.modelsLiveData.observe(viewLifecycleOwner){
+            adapterPdfUser = AdapterPdfUser(requireActivity(), it)
+            binding.booksRv.adapter = adapterPdfUser
+        }
     }
 
     /*private fun loadMostViewedBooks(s: String) {
-        pdfArrayList = ArrayList()
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
-        ref.orderByChild(s). limitToLast(10)
-            .addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                pdfArrayList.clear()
-                for (ds in snapshot.children){
-                    val model = ds.getValue(ModelPdf::class.java)
-                    pdfArrayList.add(model!!)
-                }
-                adapterPdfUser = AdapterPdfUser(context!!, pdfArrayList)
-                binding.booksRv.adapter = adapterPdfUser
-            }
-
-            override fun onCancelled(error: DatabaseError) { }
-        })
     }*/
 
-    private fun loadMostDownloadedBooks(s: String) {
-        pdfArrayList = ArrayList()
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
-        ref.orderByChild(s).limitToLast(10)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    pdfArrayList.clear()
-                    for (ds in snapshot.children) {
-                        val model = ds.getValue(ModelPdf::class.java)
-                        pdfArrayList.add(model!!)
-                    }
-                    adapterPdfUser = AdapterPdfUser(context!!, pdfArrayList)
-                    binding.booksRv.adapter = adapterPdfUser
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
+    private fun loadMostDownloadedBooks() {
+        Log.d(PdfDetailFragment.TAG, "onDataChange most result ")
+        viewModelMD.modelsLiveData.observe(viewLifecycleOwner){
+            adapterPdfUser = AdapterPdfUser(requireActivity(), it)
+            Log.d(PdfDetailFragment.TAG, "onDataChange most result:${it[0].downloadCount} ${it[1].downloadCount} ${it[2].downloadCount}")
+            binding.booksRv.adapter = adapterPdfUser
+        }
     }
 
     private fun loadCategoriesBooks() {
-        pdfArrayList = ArrayList()
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
-        ref.orderByChild("categoryId").equalTo(categoryId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    pdfArrayList.clear()
-                    for (ds in snapshot.children) {
-                        val model = ds.getValue(ModelPdf::class.java)
-                        pdfArrayList.add(model!!)
-                    }
-                    adapterPdfUser = AdapterPdfUser(context!!, pdfArrayList)
-                    binding.booksRv.adapter = adapterPdfUser
-                }
 
-                override fun onCancelled(error: DatabaseError) {}
-            })
+        viewModel.modelsLiveData.observe(viewLifecycleOwner){
+            adapterPdfUser = AdapterPdfUser(requireActivity(), it)
+            binding.booksRv.adapter = adapterPdfUser
+        }
     }
 
     companion object {

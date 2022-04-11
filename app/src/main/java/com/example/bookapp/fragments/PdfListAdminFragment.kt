@@ -8,14 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.bookapp.*
+import com.example.bookapp.viewModel.PdfListViewModel
+import com.example.bookapp.ViewModelFactory.PdfListViewModelFactory
 import com.example.bookapp.adapter.AdapterPdfAdmin
-import com.example.bookapp.model.ModelPdf
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentPdfListAdminBinding
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import java.lang.Exception
 
 class PdfListAdminFragment : Fragment() {
@@ -24,9 +23,9 @@ class PdfListAdminFragment : Fragment() {
 
     private var categoryId = ""
     private var category = ""
-
-    private lateinit var pdfArrayList: ArrayList<ModelPdf>
     private lateinit var adapterPdfAdmin: AdapterPdfAdmin
+    private lateinit var viewModel: PdfListViewModel
+    private lateinit var pdfListRepositoryImpl: PdfListRepositoryImpl
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +35,10 @@ class PdfListAdminFragment : Fragment() {
 
         categoryId = this.requireArguments().getString("categoryID").toString()
         category = this.requireArguments().getString("category").toString()
-
         binding.subTitleTv.text = category
+
+        pdfListRepositoryImpl = PdfListRepositoryImpl(categoryId)
+        viewModel = ViewModelProvider(this, PdfListViewModelFactory(pdfListRepositoryImpl))[PdfListViewModel::class.java]
 
         loadPdfList()
 
@@ -64,28 +65,11 @@ class PdfListAdminFragment : Fragment() {
     }
 
     private fun loadPdfList() {
-        pdfArrayList = ArrayList()
 
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
-        ref.orderByChild("categoryId").equalTo(categoryId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    pdfArrayList.clear()
-                    for (ds in snapshot.children) {
-                        val model = ds.getValue(ModelPdf::class.java)
-                        if (model != null) {
-                            pdfArrayList.add(model)
-                            Log.d(TAG, "onDataChange: ${model.title} ${model.categoryId}")
-                        }
-                    }
-                    adapterPdfAdmin = AdapterPdfAdmin(requireActivity(), pdfArrayList)
-                    binding.booksRv.adapter = adapterPdfAdmin
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-            })
+        viewModel.modelsLiveData.observe(viewLifecycleOwner){
+            adapterPdfAdmin = AdapterPdfAdmin(requireActivity(), it)
+            binding.booksRv.adapter = adapterPdfAdmin
+        }
     }
 
     companion object {

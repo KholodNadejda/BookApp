@@ -9,11 +9,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.bookapp.MyApplication
+import com.example.bookapp.*
+import com.example.bookapp.viewModel.DeleteCategoryViewModel
 import com.example.bookapp.filter.FilterCategory
 import com.example.bookapp.model.ModelCategory
-import com.example.bookapp.R
-import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.RowCategoryBinding
 import com.example.bookapp.fragments.PdfListAdminFragment
 import com.google.firebase.database.FirebaseDatabase
@@ -21,18 +20,21 @@ import com.google.firebase.database.FirebaseDatabase
 
 class AdapterCategory : RecyclerView.Adapter<AdapterCategory.HolderCategory>, Filterable {
     private val context: Context //
-    var categoryArrayList: ArrayList<ModelCategory> //
-    private var filterList: ArrayList<ModelCategory>
+    var categoryList: List<ModelCategory> //
+    private var filterList: List<ModelCategory>
     private var filter: FilterCategory? = null
 
     private lateinit var binding: RowCategoryBinding //
 
+    private lateinit var viewModel: DeleteCategoryViewModel
+
     constructor(
         context: Context,
-        categoryArrayList: ArrayList<ModelCategory>,
+        //
+        categoryArrayList: List<ModelCategory>,
     ) {
         this.context = context
-        this.categoryArrayList = categoryArrayList
+        this.categoryList = categoryArrayList
         this.filterList = categoryArrayList
     }
 
@@ -43,7 +45,7 @@ class AdapterCategory : RecyclerView.Adapter<AdapterCategory.HolderCategory>, Fi
 
     override fun onBindViewHolder(holder: HolderCategory, position: Int) {
         //get data
-        val model = categoryArrayList[position]
+        val model = categoryList[position]
         val id = model.id
         val category = model.category
         //val uid = model.uid
@@ -91,7 +93,7 @@ class AdapterCategory : RecyclerView.Adapter<AdapterCategory.HolderCategory>, Fi
     }
 
     override fun getItemCount(): Int { //
-        return categoryArrayList.size
+        return categoryList.size
     }
 
     override fun getFilter(): Filter {

@@ -8,27 +8,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentForgotPasswordBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.example.bookapp.repository.RecoverPasswordRepositoryImpl
+import com.example.bookapp.viewModel.RecoverPasswordViewModel
+import com.example.bookapp.ViewModelFactory.RecoverPasswordViewModelFactory
 
 class ForgotPasswordFragment : Fragment() {
 
     private lateinit var binding: FragmentForgotPasswordBinding
-
-    private lateinit var firebaseAuth: FirebaseAuth
-
     private lateinit var progressDialog: ProgressDialog
-
+    private lateinit var recoverPasswordViewModel: RecoverPasswordViewModel
+    private lateinit var recoverPasswordRepositoryImpl: RecoverPasswordRepositoryImpl
     private var email = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentForgotPasswordBinding.inflate(layoutInflater)
-
-        firebaseAuth = FirebaseAuth.getInstance()
 
         progressDialog = ProgressDialog(requireActivity())
         progressDialog.setTitle("Please wait")
@@ -57,10 +56,17 @@ class ForgotPasswordFragment : Fragment() {
     }
 
     private fun recoverPassword() {
+        recoverPasswordRepositoryImpl = RecoverPasswordRepositoryImpl(email)
+        recoverPasswordViewModel = ViewModelProvider(this, RecoverPasswordViewModelFactory(recoverPasswordRepositoryImpl)
+        )[RecoverPasswordViewModel::class.java]
         progressDialog.setMessage("Sending password reset instructions to $email")
         progressDialog.show()
-
-        firebaseAuth.sendPasswordResetEmail(email)
+        recoverPasswordViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            progressDialog.dismiss()
+            Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT)
+                .show()
+        }
+        /*firebaseAuth.sendPasswordResetEmail(email)
             .addOnSuccessListener {
                 progressDialog.dismiss()
                 Toast.makeText(requireActivity(), "Instructions send to $email", Toast.LENGTH_SHORT)
@@ -73,7 +79,7 @@ class ForgotPasswordFragment : Fragment() {
                     "Failed to send due to ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-            }
+            }*/
     }
 
     companion object {

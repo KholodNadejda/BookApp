@@ -1,11 +1,8 @@
 package com.example.bookapp.fragments
 
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,21 +11,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.example.bookapp.Constants
+import androidx.lifecycle.ViewModelProvider
 import com.example.bookapp.MyApplication
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentPdfDetailBinding
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
-import java.io.FileOutputStream
-import java.lang.Exception
+import com.example.bookapp.repository.DownloadBookRepositoryImpl
+import com.example.bookapp.repository.LoadBookDetailsRepositoryImpl
+import com.example.bookapp.viewModel.DownloadBookViewModel
+import com.example.bookapp.ViewModelFactory.DownloadBookViewModelFactory
+import com.example.bookapp.viewModel.LoadBookDetailsViewModel
+import com.example.bookapp.ViewModelFactory.LoadBookDetailsViewModelFactory
 
 class PdfDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentPdfDetailBinding
+    private lateinit var downloadBookRepositoryImpl: DownloadBookRepositoryImpl
+    private lateinit var downloadBookViewModel: DownloadBookViewModel
+    private lateinit var loadBookDetailsRepositoryImpl: LoadBookDetailsRepositoryImpl
+    private lateinit var loadBookDetailsViewModel: LoadBookDetailsViewModel
     private var bookId = ""
     private var bookTitle = ""
     private var bookUrl = ""
@@ -90,7 +90,19 @@ class PdfDetailFragment : Fragment() {
         progressDialog.setMessage("Downloading Book")
         progressDialog.show()
 
-        val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(bookUrl)
+        downloadBookRepositoryImpl = DownloadBookRepositoryImpl(bookUrl, bookId)
+        downloadBookViewModel = ViewModelProvider(this, DownloadBookViewModelFactory(downloadBookRepositoryImpl)
+        )[DownloadBookViewModel::class.java]
+
+        downloadBookViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            Toast.makeText(
+                requireActivity(),
+                it,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+      /*  val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(bookUrl)
         storageReference.getBytes(Constants.MAX_BYTES_PDF)
             .addOnSuccessListener { bytes ->
                 Log.d(TAG, "downloadBook: Book downloaded")
@@ -103,10 +115,10 @@ class PdfDetailFragment : Fragment() {
                     "Failed to download book due to ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-            }
+            }*/
     }
 
-    private fun saveToDownloadsFolder(bytes: ByteArray?) {
+   /* private fun saveToDownloadsFolder(bytes: ByteArray?) {
         Log.d(TAG, "saveToDownloadsFolder: saving download book")
 
         val nameWithExtension = "${System.currentTimeMillis()}.pdf"
@@ -175,10 +187,22 @@ class PdfDetailFragment : Fragment() {
 
                 }
             })
-    }
+    }*/
 
     private fun loadBookDetails() {
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
+        loadBookDetailsRepositoryImpl = LoadBookDetailsRepositoryImpl(bookId, bookTitle, bookUrl, binding.categoryTv, binding.sizeTv)
+        loadBookDetailsViewModel = ViewModelProvider(this, LoadBookDetailsViewModelFactory(loadBookDetailsRepositoryImpl)
+        )[LoadBookDetailsViewModel::class.java]
+
+        loadBookDetailsViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            binding.titleTv.text = it[0]
+            binding.descriptionTv.text = it[1]
+            binding.viewsTv.text = it[2]
+            binding.downloadsTv.text = it[3]
+            binding.dateTv.text = it[4]
+        }
+
+      /*  val ref = FirebaseDatabase.getInstance().getReference("Books")
         ref.child(bookId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -206,7 +230,7 @@ class PdfDetailFragment : Fragment() {
                 override fun onCancelled(error: DatabaseError) {
 
                 }
-            })
+            })*/
     }
 
     companion object {
