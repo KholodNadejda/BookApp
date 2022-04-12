@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainFragment : Fragment() {
 
-    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var binding: FragmentMainBinding
     private lateinit var checkUserViewModel: CheckUserViewModel
     private lateinit var checkUserRepositoryImpl: CheckUserRepositoryImpl
@@ -27,12 +26,13 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(layoutInflater)
-        firebaseAuth = FirebaseAuth.getInstance()
-        checkUserRepositoryImpl = CheckUserRepositoryImpl()
-        checkUserViewModel = ViewModelProvider(this,
-            CheckUserViewModelFactory(checkUserRepositoryImpl)
-        )[CheckUserViewModel::class.java]
-
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        if (firebaseUser !== null) {
+            Log.d("TAG11", "checkUser onCreateView true")
+        } else {
+            Log.d("TAG11", "checkUser onCreateView false")
+        }
+        Log.d("TAG11", "checkUser onCreateView")
         checkUser()
 
         binding.loginBtn.setOnClickListener {
@@ -46,10 +46,16 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //checkUser()
+        Log.d("TAG11", "checkUser onViewCreated")
+        checkUser()
     }
 
     private fun checkUser() {
+        checkUserRepositoryImpl = CheckUserRepositoryImpl()
+        checkUserViewModel = ViewModelProvider(this,
+            CheckUserViewModelFactory(checkUserRepositoryImpl)
+        )[CheckUserViewModel::class.java]
+
         Log.d("TAG11", "checkUser ")
         checkUserViewModel.modelsLiveData.observe(viewLifecycleOwner){
             Log.d("TAG11", "checkUser it $it")
@@ -61,34 +67,7 @@ class MainFragment : Fragment() {
                 navigator().showDashboardAdminFragment()
             }
         }
-
-        /*val firebaseUser = firebaseAuth.currentUser
-        if (firebaseUser !== null) {
-            val ref = FirebaseDatabase.getInstance().getReference("User")
-            ref.child(firebaseUser.uid)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onCancelled(error: DatabaseError) {
-
-                    }
-
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val userType = snapshot.child("userType").value
-                        if (userType == "user") {
-                            navigator().showDashboardUserFragment()
-                        } else if (userType == "admin") {
-                            navigator().showDashboardAdminFragment()
-                        }
-                    }
-                })
-        }*/
-
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("TAG11", "onDestroyView: ")
-    }
-
     companion object {
         @JvmStatic
         fun newInstance() = MainFragment()

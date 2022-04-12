@@ -126,90 +126,13 @@ class PdfAddFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-
-     /*   val timestamp = System.currentTimeMillis()
-        val filePathAndName = "Books/$timestamp"
-        val storageReference = FirebaseStorage.getInstance().getReference(filePathAndName)
-        storageReference.putFile(pdfUri!!)
-            .addOnSuccessListener { taskSnapshot ->
-                Log.d(TAG, "uploadPdfToStorage: PDF uploaded now getting url")
-
-                val uriTask: Task<Uri> = taskSnapshot.storage.downloadUrl
-                while (!uriTask.isSuccessful);
-                val uploadedPdfUri = "${uriTask.result}"
-
-                uploadPdfInfoToDb(uploadedPdfUri, timestamp)
-            }
-            .addOnFailureListener { e ->
-                Log.d(TAG, "uploadPdfToStorage: failed to upload due to ${e.message}")
-                progressDialog.dismiss()
-                Toast.makeText(
-                    requireActivity(),
-                    "Failed to upload due to ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }*/
     }
-
-   /* private fun uploadPdfInfoToDb(uploadedPdfUri: String, timestamp: Long) {
-        Log.d(TAG, "uploadPdfInfoToDb: upload To Db")
-        progressDialog.setMessage("Uploading Pdf Info")
-
-        val uid = firebaseAuth.uid
-        val hashMap: HashMap<String, Any> = HashMap()
-        hashMap["uid"] = "$uid"
-        hashMap["id"] = "$timestamp"
-        hashMap["title"] = "$title"
-        hashMap["description"] = "$description"
-        hashMap["categoryId"] = "$selectedCategoryId"
-        hashMap["url"] = "$uploadedPdfUri"
-        hashMap["timestamp"] = timestamp
-        hashMap["viewsCount"] = 0
-        hashMap["downloadCount"] = 0
-
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
-        ref.child("$timestamp")
-            .setValue(hashMap)
-            .addOnSuccessListener {
-                Log.d(TAG, "uploadPdfInfoToDb: uploaded To Db")
-                progressDialog.dismiss()
-                Toast.makeText(requireActivity(), "Uploaded", Toast.LENGTH_SHORT).show()
-                pdfUri == null
-            }
-            .addOnFailureListener { e ->
-                Log.d(TAG, "uploadPdfInfoToDb: failed to upload due to ${e.message}")
-                progressDialog.dismiss()
-                Toast.makeText(
-                    requireActivity(),
-                    "Failed to upload due to ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-    }*/
 
     private fun loadPdfCategories() {
 
         viewModel.modelsLiveData.observe(viewLifecycleOwner){
             categoryArrayList = it
         }
-        /*Log.d(TAG, "loadPdfCategories: Load Pdf Categories")
-        categoryArrayList = ArrayList()
-
-        val ref = FirebaseDatabase.getInstance().getReference("Categories")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                categoryArrayList.clear()
-                for (ds in snapshot.children) {
-                    val model = ds.getValue(ModelCategory::class.java)
-                    categoryArrayList.add(model!!)
-                    Log.d(TAG, "onDataChange: ${model.category}")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })*/
     }
 
     private fun categoryPickDialog() {

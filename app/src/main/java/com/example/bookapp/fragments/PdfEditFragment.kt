@@ -18,10 +18,6 @@ import com.example.bookapp.repository.UpdatePdfRepositoryImpl
 import com.example.bookapp.repository.LoadBookInfoRepositoryImpl
 import com.example.bookapp.repository.LoadCategoriesRepositoryImpl
 import com.example.bookapp.viewModel.*
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class PdfEditFragment : Fragment() {
 
@@ -104,31 +100,6 @@ class PdfEditFragment : Fragment() {
         loadBookInfoCategoryViewModel.modelsLiveData.observe(viewLifecycleOwner){
             binding.categoryTv.text = it
         }
-
-       /* val ref = FirebaseDatabase.getInstance().getReference("Books")
-        ref.child(bookId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    selectCategoryId = snapshot.child("categoryId").value.toString()
-                    val description = snapshot.child("description").value.toString()
-                    val title = snapshot.child("title").value.toString()
-
-                    binding.titleEt.setText(title)
-                    binding.descriptionEt.setText(description)
-
-                    Log.d(TAG, "onDataChange: loading book category")
-                    val refCategory = FirebaseDatabase.getInstance().getReference("Categories")
-                    refCategory.child(selectCategoryId)
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                val category = snapshot.child("category").value
-                                binding.categoryTv.text = category.toString()
-                            }
-                            override fun onCancelled(error: DatabaseError) { }
-                        })
-                }
-                override fun onCancelled(error: DatabaseError) {  }
-            })*/
     }
 
     private fun validateData() {
@@ -167,34 +138,9 @@ class PdfEditFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-
-      /*Log.d(TAG, "updatePdf: Starting updating pdf info...")
-        val hashMap = HashMap<String, Any>()
-        hashMap["title"] = "$title"
-        hashMap["description"] = "$description"
-        hashMap["categoryId"] = "$selectCategoryId"
-
-        val ref = FirebaseDatabase.getInstance().getReference("Books")
-        ref.child(bookId)
-            .updateChildren(hashMap)
-            .addOnSuccessListener {
-                processDialog.dismiss()
-                Log.d(TAG, "updatePdf: Update successful...")
-                Toast.makeText(requireActivity(), "Update successful", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                processDialog.dismiss()
-                Log.d(TAG, "updatePdf: failed to update due to ${e.message}")
-                Toast.makeText(
-                    requireActivity(),
-                    "Failed to update due to ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }*/
     }
 
     private fun categoryDialog() {
-        // val categoriesArray = categoryTitleArrayList
         val categoriesArray = arrayOfNulls<String>(categoryTitleArrayList.size)
         for (i in categoryTitleArrayList.indices) {
             categoriesArray[i] = categoryTitleArrayList[i]
@@ -212,7 +158,6 @@ class PdfEditFragment : Fragment() {
     }
 
     private fun loadCategories() {
-        //Log.d(TAG, "loadCategories: loading Categories...")
         categoryTitleArrayList = ArrayList()
         categoryIdArrayList = ArrayList()
 
@@ -228,25 +173,6 @@ class PdfEditFragment : Fragment() {
         loadCategoriesTitleViewModel.modelsLiveData.observe(viewLifecycleOwner){
             categoryTitleArrayList = it
         }
-       /* val ref = FirebaseDatabase.getInstance().getReference("Categories")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                categoryIdArrayList.clear()
-                categoryTitleArrayList.clear()
-                for (ds in snapshot.children) {
-                    val id = "${ds.child("id").value}"
-                    val category = "${ds.child("category").value}"
-
-                    categoryIdArrayList.add(id)
-                    categoryTitleArrayList.add(category)
-
-                    Log.d(TAG, "onDataChange: Category id $id")
-                    Log.d(TAG, "onDataChange: Category $category")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {}
-        })*/
     }
 
     companion object {

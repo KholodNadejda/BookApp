@@ -10,12 +10,10 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookapp.*
-import com.example.bookapp.viewModel.DeleteCategoryViewModel
 import com.example.bookapp.filter.FilterCategory
 import com.example.bookapp.model.ModelCategory
 import com.example.bookapp.databinding.RowCategoryBinding
 import com.example.bookapp.fragments.PdfListAdminFragment
-import com.google.firebase.database.FirebaseDatabase
 
 
 class AdapterCategory : RecyclerView.Adapter<AdapterCategory.HolderCategory>, Filterable {
@@ -26,7 +24,6 @@ class AdapterCategory : RecyclerView.Adapter<AdapterCategory.HolderCategory>, Fi
 
     private lateinit var binding: RowCategoryBinding //
 
-    private lateinit var viewModel: DeleteCategoryViewModel
 
     constructor(
         context: Context,
@@ -64,7 +61,8 @@ class AdapterCategory : RecyclerView.Adapter<AdapterCategory.HolderCategory>, Fi
                         Toast.makeText(context, "Not internet connection", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(context, "Deleting", Toast.LENGTH_SHORT).show()
-                        deleteCategory(model, holder)
+                        //deleteCategory(model, holder)
+                        MyApplication.deleteCategory(model, context)
                     }
                 }
                 .setNegativeButton("Cancel") { a, _ ->
@@ -74,11 +72,6 @@ class AdapterCategory : RecyclerView.Adapter<AdapterCategory.HolderCategory>, Fi
         }
 
         holder.itemView.setOnClickListener { p0 ->
-            /* Toast.makeText(
-                 context,
-                 "holder.itemView.setOnClickListener ${id.toString()} ${category.toString()} ",
-                 Toast.LENGTH_SHORT
-             ).show()*/
             val bundle = Bundle()
             bundle.putString("category", category)
             bundle.putString("categoryID", id)
@@ -101,20 +94,6 @@ class AdapterCategory : RecyclerView.Adapter<AdapterCategory.HolderCategory>, Fi
             filter = FilterCategory(filterList, this)
         }
         return filter as FilterCategory
-    }
-
-    private fun deleteCategory(model: ModelCategory, holder: HolderCategory) { //
-        val id = model.id
-        val ref = FirebaseDatabase.getInstance().getReference("Categories")
-        ref.child(id)
-            .removeValue()
-            .addOnSuccessListener {
-                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(context, "Unable to delete due to ${e.message}.", Toast.LENGTH_SHORT)
-                    .show()
-            }
     }
 
     inner class HolderCategory(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -17,7 +17,6 @@ import com.example.bookapp.ViewModelFactory.LogoutUserViewModelFactory
 import com.example.bookapp.ViewModelFactory.ViewPagerAdapterViewModelFactory
 import com.example.bookapp.contracts.navigator
 import com.example.bookapp.databinding.FragmentDashboardUserBinding
-import com.example.bookapp.model.ModelCategory
 import com.example.bookapp.repository.CheckUserRepositoryImpl
 import com.example.bookapp.repository.ViewPagerAdapterRepositoryImpl
 import com.example.bookapp.viewModel.*
@@ -26,8 +25,6 @@ import com.example.bookapp.viewModel.*
 class DashboardUserFragment : Fragment() {
 
     private lateinit var binding: FragmentDashboardUserBinding
-   // private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var categoryArrayList: ArrayList<ModelCategory>
     private lateinit var viewPageAdapter: ViewPageAdapter
     private lateinit var checkUserNameViewModel: CheckUserNameViewModel
     private lateinit var checkUserRepositoryImpl: CheckUserRepositoryImpl
@@ -54,8 +51,6 @@ class DashboardUserFragment : Fragment() {
         viewPageAdapterViewModel = ViewModelProvider(this, ViewPagerAdapterViewModelFactory(viewPagerAdapterRepositoryImpl)
         )[ViewPagerAdapterViewModel::class.java]
 
-       // firebaseAuth = FirebaseAuth.getInstance()
-
         checkUser()
         if(!MyApplication.hasConnection(requireActivity())){
             Toast.makeText(requireActivity(), "Not internet connection", Toast.LENGTH_SHORT).show()
@@ -71,7 +66,6 @@ class DashboardUserFragment : Fragment() {
                 }
             }
         }
-
         return binding.root
     }
 
@@ -80,65 +74,6 @@ class DashboardUserFragment : Fragment() {
         viewPageAdapterViewModel.modelsLiveData.observe(viewLifecycleOwner){
             viewPager.adapter = it
         }
-
-      /*  categoryArrayList = ArrayList()
-
-        val ref = FirebaseDatabase.getInstance().getReference("Categories")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                categoryArrayList.clear()
-
-                val modelAll = ModelCategory("01", "All", 1, "")
-                // val modelMostViewed = ModelCategory("01", "Most Viewed", 1, "")
-                val modelMostDownloaded = ModelCategory("01", "Most Downloaded", 1, "")
-
-                categoryArrayList.add(modelAll)
-                // categoryArrayList.add(modelMostViewed)
-                categoryArrayList.add(modelMostDownloaded)
-
-                viewPageAdapter.addFragment(
-                    BooksUserFragment.newInstance(
-                        "${modelAll.id}",
-                        "${modelAll.category}",
-                        "${modelAll.uid}"
-                    ), modelAll.category
-                )
-                /*   viewPageAdapter.addFragment(
-                       BooksUserFragment.newInstance(
-                           "${modelMostViewed.id}",
-                           "${modelMostViewed.category}",
-                           "${modelMostViewed.uid}"
-                       ), modelMostViewed.category
-                   )*/
-                viewPageAdapter.addFragment(
-                    BooksUserFragment.newInstance(
-                        "${modelMostDownloaded.id}",
-                        "${modelMostDownloaded.category}",
-                        "${modelMostDownloaded.uid}"
-                    ), modelMostDownloaded.category
-                )
-                viewPageAdapter.notifyDataSetChanged()
-
-                for (ds in snapshot.children) {
-                    val model = ds.getValue(ModelCategory::class.java)
-                    categoryArrayList.add(model!!)
-
-                    viewPageAdapter.addFragment(
-                        BooksUserFragment.newInstance(
-                            "${model.id}",
-                            "${model.category}",
-                            "${model.uid}"
-                        ), model.category
-                    )
-                    viewPageAdapter.notifyDataSetChanged()
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {  }
-        })
-        //
-        ref.keepSynced(true)
-        //
-        viewPager.adapter = viewPageAdapter*/
     }
 
     private fun checkUser() {

@@ -30,7 +30,6 @@ class LoadCategoriesRepositoryImpl: LoadCategoriesRepository {
                     categoryTitleArrayList.add(category)
 
                     Log.d(PdfEditFragment.TAG, "onDataChange: Category id $id")
-                    //Log.d(PdfEditFragment.TAG, "onDataChange: Category $category")
                 }
                 modelsLiveDataId.value = categoryIdArrayList
                 modelsLiveDataTitle.value = categoryTitleArrayList
@@ -39,26 +38,6 @@ class LoadCategoriesRepositoryImpl: LoadCategoriesRepository {
         })
     }
     override fun loadCategoriesId(): MutableLiveData<ArrayList<String>> {
-      /*  val ref = FirebaseDatabase.getInstance().getReference("Categories")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val categoryIdArrayList = ArrayList<String>()
-                for (ds in snapshot.children) {
-                    val id = "${ds.child("id").value}"
-                    val category = "${ds.child("category").value}"
-
-                    categoryIdArrayList.add(id)
-                    categoryTitleArrayList.add(category)
-
-                    Log.d(PdfEditFragment.TAG, "onDataChange: Category id $id")
-                    //Log.d(PdfEditFragment.TAG, "onDataChange: Category $category")
-                }
-                modelsLiveDataId.value = categoryIdArrayList
-                //modelsLiveDataTitle.value = categoryTitleArrayList
-            }
-            override fun onCancelled(error: DatabaseError) {}
-        })*/
-       //modelsLiveDataId.value = categoryIdArrayList
         return modelsLiveDataId
     }
 

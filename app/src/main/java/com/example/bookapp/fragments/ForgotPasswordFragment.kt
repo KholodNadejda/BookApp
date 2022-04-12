@@ -66,20 +66,6 @@ class ForgotPasswordFragment : Fragment() {
             Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT)
                 .show()
         }
-        /*firebaseAuth.sendPasswordResetEmail(email)
-            .addOnSuccessListener {
-                progressDialog.dismiss()
-                Toast.makeText(requireActivity(), "Instructions send to $email", Toast.LENGTH_SHORT)
-                    .show()
-            }
-            .addOnFailureListener { e ->
-                progressDialog.dismiss()
-                Toast.makeText(
-                    requireActivity(),
-                    "Failed to send due to ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }*/
     }
 
     companion object {

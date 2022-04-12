@@ -37,10 +37,8 @@ class LoginUserRepositoryImpl(private val email: String, private val password: S
                     val userType = snapshot.child("userType").value
                     if (userType == "user") {
                         result.value = "user"
-                        // navigator().showDashboardUserFragment()
                     } else if (userType == "admin") {
                         result.value = "admin"
-                        // navigator().showDashboardAdminFragment()
                     }
                 }
             })

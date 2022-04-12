@@ -2,7 +2,6 @@ package com.example.bookapp.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.example.bookapp.contracts.navigator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,13 +19,9 @@ class CheckUserRepositoryImpl: CheckUserRepository {
     private var userType = MutableLiveData<String>()
     private var userName = MutableLiveData<String>()
     private var userLogout = MutableLiveData<Boolean>()
-    private var firebaseAuth: FirebaseAuth
     init {
-        firebaseAuth = FirebaseAuth.getInstance()
-    }
-    override fun checkUser(): MutableLiveData<String> {
-        Log.d("TAG11", "checkUser impl")
-        val firebaseUser = firebaseAuth.currentUser
+        val ref = FirebaseDatabase.getInstance().reference
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
         Log.d("TAG11", "checkUser impl ${firebaseUser.toString()}")
         if (firebaseUser !== null) {
             val ref = FirebaseDatabase.getInstance().getReference("User")
@@ -39,24 +34,24 @@ class CheckUserRepositoryImpl: CheckUserRepository {
                         userType.value = type.toString()
                     }
                 })
-            ref.keepSynced(true)
         }
-        return userType
-    }
-
-    override fun checkUserName(): MutableLiveData<String> {
-        val ref = FirebaseDatabase.getInstance().reference
-        val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser == null) {
             userName.value = "No user"
         } else {
             userName.value = firebaseUser.email
         }
         ref.keepSynced(true)
+    }
+    override fun checkUser(): MutableLiveData<String> {
+        return userType
+    }
+
+    override fun checkUserName(): MutableLiveData<String> {
         return userName
     }
 
     override fun logOut(): MutableLiveData<Boolean> {
+        val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
         try {
             firebaseAuth.signOut()
             userLogout.value = true

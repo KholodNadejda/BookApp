@@ -8,6 +8,7 @@ import android.text.format.DateFormat
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import com.example.bookapp.model.ModelCategory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -126,6 +127,20 @@ class MyApplication : Application() {
                     progressDialog.dismiss()
                     Log.d(TAG, "deleteBook: failed to delete from storage due to ${e.message}")
                     Toast.makeText(context, "Failed to delete from storage due to ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        fun deleteCategory(model: ModelCategory, context: Context){
+            val id = model.id
+            val ref = FirebaseDatabase.getInstance().getReference("Categories")
+            ref.child(id)
+                .removeValue()
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Unable to delete due to ${e.message}.", Toast.LENGTH_SHORT)
+                        .show()
                 }
         }
 

@@ -19,7 +19,6 @@ import com.example.bookapp.repository.UpdateUserInfoRepositoryImpl
 import com.example.bookapp.viewModel.CreateUserAccountViewModel
 import com.example.bookapp.viewModel.UpdateUserInfoViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 
 class RegisterFragment : Fragment() {
 
@@ -98,19 +97,6 @@ class RegisterFragment : Fragment() {
                 Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
             }
         }
-
-        /*firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                updateUserInfo()
-            }
-            .addOnFailureListener { e ->
-                progressDialog.dismiss()
-                Toast.makeText(
-                    requireActivity(),
-                    "Failed creatin account due to ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }*/
     }
 
     private fun updateUserInfo() {
@@ -129,33 +115,6 @@ class RegisterFragment : Fragment() {
             }
         }
 
-       /* val timestamp = System.currentTimeMillis()
-        val uid = firebaseAuth.uid.toString()
-        val hashMap: HashMap<String, Any?> = HashMap()
-        hashMap["uid"] = uid
-        hashMap["email"] = email
-        hashMap["name"] = name
-        hashMap["profileImage"] = ""
-        hashMap["userType"] = "user"
-        hashMap["timestamp"] = timestamp
-
-        progressDialog.setMessage("Saving user info")
-        val ref = FirebaseDatabase.getInstance().getReference("User")
-        ref.child(uid)
-            .setValue(hashMap)
-            .addOnSuccessListener {
-                progressDialog.dismiss()
-                Toast.makeText(requireActivity(), "Account created", Toast.LENGTH_SHORT).show()
-                navigator().showDashboardUserFragment()
-            }
-            .addOnFailureListener { e ->
-                progressDialog.dismiss()
-                Toast.makeText(
-                    requireActivity(),
-                    "Failed saving user info due to ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }*/
     }
 
     companion object {

@@ -1,8 +1,6 @@
 package com.example.bookapp.repository
 
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import com.example.bookapp.contracts.navigator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 

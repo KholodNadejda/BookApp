@@ -4,7 +4,6 @@ import android.util.Log
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import com.example.bookapp.MyApplication
-import com.example.bookapp.model.ModelCategory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

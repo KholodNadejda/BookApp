@@ -53,7 +53,6 @@ class BooksUserFragment : Fragment {
         binding = FragmentBooksUserBinding.inflate(layoutInflater, container, false)
 
         viewModel = ViewModelProvider(this, PdfListViewModelFactory(PdfListRepositoryImpl(categoryId)))[PdfListViewModel::class.java]
-        //viewModelMD = ViewModelProvider(this, PdfListViewModelFactory(PdfListRepositoryImpl(categoryId)))[PdfListViewModel::class.java]
         viewModelAll = ViewModelProvider(this, PdfListAllViewModelFactory(PdfListRepositoryImpl(categoryId)))[PdfListAllViewModel::class.java]
         viewModelMD = ViewModelProvider(this, PdfListMostDownloadedViewModelFactory(PdfListRepositoryImpl(categoryId)))[PdfListMostDownloadedViewModel::class.java]
 
@@ -62,9 +61,6 @@ class BooksUserFragment : Fragment {
             "All" -> {
                 loadAllBooks()
             }
-            /*"Most Viewed" -> {
-                 loadMostViewedBooks("viewedCount")
-             }*/
             "Most Downloaded" -> {
                 loadMostDownloadedBooks()
             }
@@ -97,9 +93,6 @@ class BooksUserFragment : Fragment {
             binding.booksRv.adapter = adapterPdfUser
         }
     }
-
-    /*private fun loadMostViewedBooks(s: String) {
-    }*/
 
     private fun loadMostDownloadedBooks() {
         Log.d(PdfDetailFragment.TAG, "onDataChange most result ")

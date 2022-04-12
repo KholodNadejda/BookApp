@@ -94,41 +94,7 @@ class LoginFragment : Fragment() {
                 }
             }
         }
-
-        /*firebaseAuth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                checkUser()
-            }
-            .addOnFailureListener { e ->
-                progressDialog.dismiss()
-                Toast.makeText(
-                    requireActivity(),
-                    "Login failed due to ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }*/
     }
-
-   /* private fun checkUser() {
-        progressDialog.setMessage("Checking user...")
-
-        val firebaseUser = firebaseAuth.currentUser!!
-        val ref = FirebaseDatabase.getInstance().getReference("User")
-        ref.child(firebaseUser.uid)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(error: DatabaseError) { }
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    progressDialog.dismiss()
-                    val userType = snapshot.child("userType").value
-                    if (userType == "user") {
-                        navigator().showDashboardUserFragment()
-                    } else if (userType == "admin") {
-                        navigator().showDashboardAdminFragment()
-                    }
-                }
-            })
-    }*/
 
     companion object {
         @JvmStatic

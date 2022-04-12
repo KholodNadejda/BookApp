@@ -24,11 +24,9 @@ class ViewPagerAdapterRepositoryImpl(var viewPageAdapter: DashboardUserFragment.
                 categoryArrayList.clear()
 
                 val modelAll = ModelCategory("01", "All", 1, "")
-                // val modelMostViewed = ModelCategory("01", "Most Viewed", 1, "")
                 val modelMostDownloaded = ModelCategory("01", "Most Downloaded", 1, "")
 
                 categoryArrayList.add(modelAll)
-                // categoryArrayList.add(modelMostViewed)
                 categoryArrayList.add(modelMostDownloaded)
 
                 viewPageAdapter.addFragment(
@@ -38,13 +36,6 @@ class ViewPagerAdapterRepositoryImpl(var viewPageAdapter: DashboardUserFragment.
                         "${modelAll.uid}"
                     ), modelAll.category
                 )
-                /*   viewPageAdapter.addFragment(
-                       BooksUserFragment.newInstance(
-                           "${modelMostViewed.id}",
-                           "${modelMostViewed.category}",
-                           "${modelMostViewed.uid}"
-                       ), modelMostViewed.category
-                   )*/
                 viewPageAdapter.addFragment(
                     BooksUserFragment.newInstance(
                         "${modelMostDownloaded.id}",
@@ -70,9 +61,7 @@ class ViewPagerAdapterRepositoryImpl(var viewPageAdapter: DashboardUserFragment.
             }
             override fun onCancelled(error: DatabaseError) {  }
         })
-        //
         ref.keepSynced(true)
-        //
     }
 
     override fun setupWithViewPagerAdapter(): MutableLiveData<DashboardUserFragment.ViewPageAdapter> {
