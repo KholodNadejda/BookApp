@@ -37,12 +37,7 @@ class PdfAddFragment : Fragment() {
     private lateinit var uploadPdfToStorageViewModel: UploadPdfToStorageViewModel
     private lateinit var uploadPdfToStorageRepositoryImpl: UploadPdfToStorageRepositoryImpl
     private var pdfUri: Uri? = null
-    private val TAG = "PDF_ADD_TAG"
     private var selectedCategoryId = ""
-    private var selectedCategoryTitle = ""
-    private var title = ""
-    private var description = ""
-    private var category = ""
 
 
     override fun onCreateView(
@@ -84,10 +79,10 @@ class PdfAddFragment : Fragment() {
     }
 
     private fun validateData() {
-        Log.d(TAG, "validateData: validate Data")
-        title = binding.titleEt.text.toString().trim()
-        description = binding.descriptionEt.text.toString().trim()
-        category = binding.categoryTv.text.toString().trim()
+        Log.d("PDF_ADD_TAG", "validateData: validate Data")
+        val title = binding.titleEt.text.toString().trim()
+        val description = binding.descriptionEt.text.toString().trim()
+        val category = binding.categoryTv.text.toString().trim()
 
         when {
             title.isEmpty() -> {
@@ -103,13 +98,13 @@ class PdfAddFragment : Fragment() {
                 Toast.makeText(requireActivity(), "Pick PDF", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                uploadPdfToStorage()
+                uploadPdfToStorage(title, description, category)
             }
         }
     }
 
-    private fun uploadPdfToStorage() {
-        Log.d(TAG, "uploadPdfToStorage: uploading To Storage")
+    private fun uploadPdfToStorage(title: String, description: String, category: String) {
+        Log.d("PDF_ADD_TAG", "uploadPdfToStorage: uploading To Storage")
 
         progressDialog.setMessage("Uploading PDF")
         progressDialog.show()
@@ -136,7 +131,7 @@ class PdfAddFragment : Fragment() {
     }
 
     private fun categoryPickDialog() {
-        Log.d(TAG, "categoryPickDialog: Showing pdf category pick dialog")
+        Log.d("PDF_ADD_TAG", "categoryPickDialog: Showing pdf category pick dialog")
         val categoriesArray = arrayOfNulls<String>(categoryArrayList.size)
         for (i in categoryArrayList.indices) {
             categoriesArray[i] = categoryArrayList[i].category
@@ -144,18 +139,18 @@ class PdfAddFragment : Fragment() {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle("Pick Category")
             .setItems(categoriesArray) { dialog, which ->
-                selectedCategoryTitle = categoryArrayList[which].category
+                val selectedCategoryTitle = categoryArrayList[which].category
                 selectedCategoryId = categoryArrayList[which].id
                 binding.categoryTv.text = selectedCategoryTitle
 
-                Log.d(TAG, "categoryPickDialog: Selected Category ID: $selectedCategoryId")
-                Log.d(TAG, "categoryPickDialog: Selected Category Title: $selectedCategoryTitle")
+                Log.d("PDF_ADD_TAG", "categoryPickDialog: Selected Category ID: $selectedCategoryId")
+                Log.d("PDF_ADD_TAG", "categoryPickDialog: Selected Category Title: $selectedCategoryTitle")
             }
             .show()
     }
 
     private fun pdfPickIntent() {
-        Log.d(TAG, "pdfPickIntent: start pdf Pick Intent")
+        Log.d("PDF_ADD_TAG", "pdfPickIntent: start pdf Pick Intent")
         val intent = Intent()
         intent.type = "application/pdf"
         intent.action = Intent.ACTION_GET_CONTENT
@@ -166,10 +161,10 @@ class PdfAddFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult(),
         ActivityResultCallback<ActivityResult> { result ->
             if (result.resultCode == RESULT_OK) {
-                Log.d(TAG, "PDF Picked ")
+                Log.d("PDF_ADD_TAG", "PDF Picked ")
                 pdfUri = result.data!!.data
             } else {
-                Log.d(TAG, "PDF Pick cancelled ")
+                Log.d("PDF_ADD_TAG", "PDF Pick cancelled ")
                 Toast.makeText(requireActivity(), "Cancelled", Toast.LENGTH_SHORT).show()
             }
         }

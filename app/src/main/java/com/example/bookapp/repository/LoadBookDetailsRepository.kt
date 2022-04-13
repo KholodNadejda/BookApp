@@ -13,7 +13,7 @@ interface LoadBookDetailsRepository {
     fun loadBookDetails(): MutableLiveData<ArrayList<String>>
 }
 
-class LoadBookDetailsRepositoryImpl(private var bookId: String, private var bookTitle: String, private var bookUrl: String, private var categoryTv: TextView, private  var sizeTv: TextView): LoadBookDetailsRepository {
+class LoadBookDetailsRepositoryImpl(private var bookId: String, private var categoryTv: TextView, private  var sizeTv: TextView): LoadBookDetailsRepository {
    private val result = MutableLiveData<ArrayList<String>>()
     override fun loadBookDetails(): MutableLiveData<ArrayList<String>> {
         val ref = FirebaseDatabase.getInstance().getReference("Books")
@@ -26,25 +26,20 @@ class LoadBookDetailsRepositoryImpl(private var bookId: String, private var book
                     val description = "${snapshot.child("description").value}"
                     val downloadsCount = "${snapshot.child("downloadCount").value}"
                     val timestamp = "${snapshot.child("timestamp").value}"
-                    bookTitle = "${snapshot.child("title").value}"
+                    val bookTitle = "${snapshot.child("title").value}"
                     val uid = "${snapshot.child("uid").value}"
-                    bookUrl = "${snapshot.child("url").value}"
+                    val bookUrl = "${snapshot.child("url").value}"
                     val viewsCount = "${snapshot.child("viewsCount").value}"
 
                     val date = MyApplication.formatTimeStamp(timestamp.toLong())
                     MyApplication.loadCategory(categoryId, categoryTv)
-                    MyApplication.loadPdfSize("$bookUrl", "$bookTitle", sizeTv)
+                    MyApplication.loadPdfSize("$bookUrl", sizeTv)
 
                     models.add(bookTitle)
                     models.add(description)
                     models.add(viewsCount)
                     models.add(downloadsCount)
                     models.add(date)
-                    /*result.value?.set(0, bookTitle)
-                    result.value?.set(1, description)
-                    result.value?.set(2, viewsCount)
-                    result.value?.set(3, downloadsCount)
-                    result.value?.set(4, date)*/
                     result.value = models
                     Log.d("loadBookDetails", " ${result.value?.get(0)}  ${result.value?.get(1)}  ${result.value?.get(2)}  ${result.value?.get(3)}  ${result.value?.get(4)}")
                 }

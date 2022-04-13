@@ -9,11 +9,7 @@ interface AddCategoryRepository {
 }
 class AddCategoryRepositoryImpl(var category: String): AddCategoryRepository {
 
-    private var firebaseAuth: FirebaseAuth
-    private var stringOut = MutableLiveData<String>()
-    init {
-        firebaseAuth = FirebaseAuth.getInstance()
-    }
+    private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override fun addCategory(): MutableLiveData<String> {
         val timestamp = System.currentTimeMillis()
@@ -22,7 +18,7 @@ class AddCategoryRepositoryImpl(var category: String): AddCategoryRepository {
         hashMap["category"] = category
         hashMap["timestamp"] = timestamp
         hashMap["uid"] = "${firebaseAuth.uid}"
-
+        val stringOut = MutableLiveData<String>()
         val ref = FirebaseDatabase.getInstance().getReference("Categories")
         ref.child("$timestamp")
             .setValue(hashMap)

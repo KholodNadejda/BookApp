@@ -21,7 +21,6 @@ class CategoryAddFragment : Fragment() {
     private lateinit var progressDialog: ProgressDialog
     private lateinit var viewModel: AddCategoryViewModel
     private lateinit var addCategoryRepositoryImpl: AddCategoryRepositoryImpl
-    private var category = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,15 +47,15 @@ class CategoryAddFragment : Fragment() {
     }
 
     private fun validateData() {
-        category = binding.categoryEt.text.toString().trim()
+        val category = binding.categoryEt.text.toString().trim()
         if (category.isEmpty()) {
             Toast.makeText(requireActivity(), "Enter Category", Toast.LENGTH_SHORT).show()
         } else {
-            addCategoryFirebase()
+            addCategoryFirebase(category)
         }
     }
 
-    private fun addCategoryFirebase() {
+    private fun addCategoryFirebase(category: String) {
         addCategoryRepositoryImpl = AddCategoryRepositoryImpl(category)
         viewModel = ViewModelProvider(this, AddCategoryViewModelFactory(addCategoryRepositoryImpl))[AddCategoryViewModel::class.java]
         progressDialog.show()

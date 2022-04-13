@@ -26,9 +26,9 @@ class RegisterFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
 
-    private var name = ""
-    private var email = ""
-    private var password = ""
+    //private var name = ""
+    //private var email = ""
+    //private var password = ""
 
     private lateinit var createUserAccountViewModel: CreateUserAccountViewModel
     private lateinit var createUserAccountRepositoryImpl: CreateUserAccountRepositoryImpl
@@ -57,9 +57,9 @@ class RegisterFragment : Fragment() {
     }
 
     private fun validateData() {
-        name = binding.nameEt.text.toString().trim()
-        email = binding.emailEt.text.toString().trim()
-        password = binding.passwordEt.text.toString().trim()
+        val name = binding.nameEt.text.toString().trim()
+        val email = binding.emailEt.text.toString().trim()
+        val password = binding.passwordEt.text.toString().trim()
         val confirmPassword = binding.confirmPasswordEt.text.toString().trim()
 
         if (name.isEmpty()) {
@@ -77,12 +77,12 @@ class RegisterFragment : Fragment() {
             if(!MyApplication.hasConnection(requireActivity())){
                 Toast.makeText(requireActivity(), "Not internet connection", Toast.LENGTH_SHORT).show()
             } else {
-                createUserAccount()
+                createUserAccount(email, password, name)
             }
         }
     }
 
-    private fun createUserAccount() {
+    private fun createUserAccount(email: String, password: String, name: String) {
         progressDialog.setMessage("Creating Account")
         progressDialog.show()
 
@@ -91,7 +91,7 @@ class RegisterFragment : Fragment() {
         )[CreateUserAccountViewModel::class.java]
         createUserAccountViewModel.modelsLiveData.observe(viewLifecycleOwner) {
             if( it == "Success") {
-                updateUserInfo()
+                updateUserInfo(email, name)
             } else {
                 progressDialog.dismiss()
                 Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
@@ -99,7 +99,7 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    private fun updateUserInfo() {
+    private fun updateUserInfo(email: String, name: String) {
         updateUserInfoRepositoryImpl = UpdateUserInfoRepositoryImpl(email, name)
         updateUserInfoViewModel = ViewModelProvider(this, UpdateUserInfoViewModelFactory(updateUserInfoRepositoryImpl)
         )[UpdateUserInfoViewModel::class.java]

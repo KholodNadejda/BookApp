@@ -30,7 +30,6 @@ class PdfDetailFragment : Fragment() {
     private lateinit var loadBookDetailsRepositoryImpl: LoadBookDetailsRepositoryImpl
     private lateinit var loadBookDetailsViewModel: LoadBookDetailsViewModel
     private var bookId = ""
-    private var bookTitle = ""
     private var bookUrl = ""
 
     private lateinit var progressDialog: ProgressDialog
@@ -102,7 +101,7 @@ class PdfDetailFragment : Fragment() {
     }
 
     private fun loadBookDetails() {
-        loadBookDetailsRepositoryImpl = LoadBookDetailsRepositoryImpl(bookId, bookTitle, bookUrl, binding.categoryTv, binding.sizeTv)
+        loadBookDetailsRepositoryImpl = LoadBookDetailsRepositoryImpl(bookId, binding.categoryTv, binding.sizeTv)
         loadBookDetailsViewModel = ViewModelProvider(this, LoadBookDetailsViewModelFactory(loadBookDetailsRepositoryImpl)
         )[LoadBookDetailsViewModel::class.java]
 

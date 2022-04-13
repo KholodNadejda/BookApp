@@ -32,7 +32,7 @@ class MyApplication : Application() {
             return DateFormat.format("dd/MM/yyyy", cal).toString()
         }
 
-        fun loadPdfSize(pdfUrl: String, pdfTitle: String, sizeTv: TextView) {
+        fun loadPdfSize(pdfUrl: String, sizeTv: TextView) {
             val TAG = "PDF_SIZE_TAG"
             val ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl)
             ref.metadata
@@ -43,12 +43,16 @@ class MyApplication : Application() {
 
                     val kb = bytes / 1024
                     val mb = kb / 1024
-                    if (mb >= 1) {
-                        sizeTv.text = "${String.format("%.2f", mb)} MB"
-                    } else if (kb >= 1) {
-                        sizeTv.text = "${String.format("%.2f", kb)} KB"
-                    } else {
-                        sizeTv.text = "${String.format("%.2f", bytes)} bytes"
+                    when {
+                        mb >= 1 -> {
+                            sizeTv.text = "${String.format("%.2f", mb)} MB"
+                        }
+                        kb >= 1 -> {
+                            sizeTv.text = "${String.format("%.2f", kb)} KB"
+                        }
+                        else -> {
+                            sizeTv.text = "${String.format("%.2f", bytes)} bytes"
+                        }
                     }
                 }
                 .addOnFailureListener { e ->

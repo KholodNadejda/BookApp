@@ -17,13 +17,14 @@ interface DownloadBookRepository {
     fun downloadBook(): MutableLiveData<String>
 }
 class DownloadBookRepositoryImpl(private var bookUrl: String,  private var bookId: String): DownloadBookRepository{
-    private var result = MutableLiveData<String>()
+
     override fun downloadBook(): MutableLiveData<String> {
+        val result = MutableLiveData<String>()
         val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(bookUrl)
         storageReference.getBytes(Constants.MAX_BYTES_PDF)
             .addOnSuccessListener { bytes ->
                 Log.d("DownloadBook", "downloadBook: Book downloaded")
-                saveToDownloadsFolder(bytes)
+                saveToDownloadsFolder(bytes, result)
             }
             .addOnFailureListener { e ->
                 Log.d(PdfDetailFragment.TAG, "downloadBook: Failed to download book due to ${e.message}")
@@ -31,7 +32,7 @@ class DownloadBookRepositoryImpl(private var bookUrl: String,  private var bookI
             }
         return result
     }
-    private fun saveToDownloadsFolder(bytes: ByteArray?) {
+    private fun saveToDownloadsFolder(bytes: ByteArray?, result: MutableLiveData<String>) {
         Log.d("DownloadBook", "saveToDownloadsFolder: saving download book")
 
         val nameWithExtension = "${System.currentTimeMillis()}.pdf"

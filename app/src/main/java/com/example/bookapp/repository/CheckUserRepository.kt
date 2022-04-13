@@ -18,7 +18,7 @@ interface CheckUserRepository {
 class CheckUserRepositoryImpl: CheckUserRepository {
     private var userType = MutableLiveData<String>()
     private var userName = MutableLiveData<String>()
-    private var userLogout = MutableLiveData<Boolean>()
+    //private var userLogout = MutableLiveData<Boolean>()
     init {
         val ref = FirebaseDatabase.getInstance().reference
         val firebaseUser = FirebaseAuth.getInstance().currentUser
@@ -51,6 +51,7 @@ class CheckUserRepositoryImpl: CheckUserRepository {
     }
 
     override fun logOut(): MutableLiveData<Boolean> {
+        val userLogout = MutableLiveData<Boolean>()
         val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
         try {
             firebaseAuth.signOut()
