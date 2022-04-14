@@ -4,21 +4,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.bookapp.repository.LoadBookInfoRepository
 
-class LoadBookInfoTitleViewModel(private val reposiroty: LoadBookInfoRepository): ViewModel() {
+class LoadBookInfoTitleViewModel(private val repository: LoadBookInfoRepository): ViewModel() {
     var modelsLiveData = MutableLiveData<String>()
     init {
-        modelsLiveData = reposiroty.getTitle()
+        modelsLiveData = repository.getTitle()
     }
 }
-class LoadBookInfoDescriptionViewModel(private val reposiroty: LoadBookInfoRepository): ViewModel()  {
+class LoadBookInfoDescriptionViewModel(private val repository: LoadBookInfoRepository): ViewModel()  {
     var modelsLiveData = MutableLiveData<String>()
     init {
-        modelsLiveData = reposiroty.getDescription()
+        modelsLiveData = repository.getDescription()
     }
 }
-class LoadBookInfoCategoryViewModel(private val reposiroty: LoadBookInfoRepository): ViewModel()  {
-    var modelsLiveData = MutableLiveData<String>()
+class LoadBookInfoCategoryViewModel(private val repository: LoadBookInfoRepository): ViewModel()  {
+    var modelsLiveData = MutableLiveData<ArrayList<String>>()
     init {
-        modelsLiveData = reposiroty.getCategory()
+        modelsLiveData = repository.getCategory()
     }
 }

@@ -27,7 +27,7 @@ class DownloadBookRepositoryImpl(private var bookUrl: String,  private var bookI
                 saveToDownloadsFolder(bytes, result)
             }
             .addOnFailureListener { e ->
-                Log.d(PdfDetailFragment.TAG, "downloadBook: Failed to download book due to ${e.message}")
+                Log.d("DownloadBook", "downloadBook: Failed to download book due to ${e.message}")
                 result.value = "Failed to download book due to ${e.message}"
             }
         return result

@@ -92,6 +92,7 @@ class PdfDetailFragment : Fragment() {
         )[DownloadBookViewModel::class.java]
 
         downloadBookViewModel.modelsLiveData.observe(viewLifecycleOwner){
+            progressDialog.dismiss()
             Toast.makeText(
                 requireActivity(),
                 it,
@@ -111,6 +112,7 @@ class PdfDetailFragment : Fragment() {
             binding.viewsTv.text = it[2]
             binding.downloadsTv.text = it[3]
             binding.dateTv.text = it[4]
+            bookUrl = it[5]
         }
     }
 

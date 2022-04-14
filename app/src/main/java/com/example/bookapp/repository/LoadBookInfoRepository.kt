@@ -11,32 +11,36 @@ import com.google.firebase.database.ValueEventListener
 interface LoadBookInfoRepository {
     fun getDescription(): MutableLiveData<String>
     fun getTitle(): MutableLiveData<String>
-    fun getCategory(): MutableLiveData<String>
+    fun getCategory(): MutableLiveData<ArrayList<String>>
 }
 class LoadBookInfoRepositoryImpl(private val bookId: String): LoadBookInfoRepository {
     private var getDescription = MutableLiveData<String>()
     private var getTitle = MutableLiveData<String>()
-    private var getCategory = MutableLiveData<String>()
+    private var getCategory = MutableLiveData<ArrayList<String>>()
     init {
-        Log.d(PdfEditFragment.TAG, "loadBookInfo: Loading bool info")
+        Log.d("LoadBookInfoRepository", "loadBookInfo: Loading bool info")
         val ref = FirebaseDatabase.getInstance().getReference("Books")
         ref.child(bookId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var selectCategoryId = snapshot.child("categoryId").value.toString()
+                    val selectCategoryId = snapshot.child("categoryId").value.toString()
                     val description = snapshot.child("description").value.toString()
                     val title = snapshot.child("title").value.toString()
 
                     getTitle.value = title
                     getDescription.value = description
-
-                    Log.d(PdfEditFragment.TAG, "onDataChange: loading book category")
+                    val models = ArrayList<String>()
+                    Log.d("LoadBookInfoRepository", "onDataChange: loading book category")
                     val refCategory = FirebaseDatabase.getInstance().getReference("Categories")
                     refCategory.child(selectCategoryId)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 val category = snapshot.child("category").value
-                                getCategory.value = category.toString()
+                                models.add(category.toString())
+                                models.add(selectCategoryId)
+                                getCategory.value = models
+                                Log.d("LoadBookInfoRepository", " ${getCategory.value?.get(0)}  ${getCategory.value?.get(1)} ")
+                                //getCategory.value = category.toString()
                             }
                             override fun onCancelled(error: DatabaseError) { }
                         })
@@ -52,7 +56,7 @@ class LoadBookInfoRepositoryImpl(private val bookId: String): LoadBookInfoReposi
         return getTitle
     }
 
-    override fun getCategory(): MutableLiveData<String> {
+    override fun getCategory(): MutableLiveData<ArrayList<String>> {
         return getCategory
     }
 

@@ -26,10 +26,6 @@ class RegisterFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
 
-    //private var name = ""
-    //private var email = ""
-    //private var password = ""
-
     private lateinit var createUserAccountViewModel: CreateUserAccountViewModel
     private lateinit var createUserAccountRepositoryImpl: CreateUserAccountRepositoryImpl
 

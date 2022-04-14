@@ -95,26 +95,24 @@ class PdfEditFragment : Fragment() {
             binding.descriptionEt.setText(it)
         }
         loadBookInfoCategoryViewModel.modelsLiveData.observe(viewLifecycleOwner){
-            binding.categoryTv.text = it
+            binding.categoryTv.text = it[0]
+            selectCategoryId = it[1]
         }
     }
 
     private fun validateData(bookId: String) {
-        val title = binding.titleEt.text.toString().trim()
-        val description = binding.descriptionEt.text.toString().trim()
-
         when {
-            title.isEmpty() -> {
+            binding.titleEt.text.toString().trim().isEmpty() -> {
                 Toast.makeText(requireActivity(), "Enter title", Toast.LENGTH_SHORT).show()
             }
-            description.isEmpty() -> {
+            binding.descriptionEt.text.toString().trim().isEmpty() -> {
                 Toast.makeText(requireActivity(), "Enter description", Toast.LENGTH_SHORT).show()
             }
-            selectCategoryId.isEmpty() -> {
+            binding.categoryTv.text.trim().isEmpty() -> {
                 Toast.makeText(requireActivity(), "Pick Category", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                updatePdf(bookId, title, description)
+                updatePdf(bookId,  binding.titleEt.text.toString().trim(), binding.descriptionEt.text.toString().trim())
             }
         }
     }
@@ -147,9 +145,8 @@ class PdfEditFragment : Fragment() {
         builder.setTitle("Choose Category")
             .setItems(categoriesArray) { dialopg, position ->
                 selectCategoryId = categoryIdArrayList[position]
-                val selectCategoryTitle = categoryTitleArrayList[position]
-
-                binding.categoryTv.text = selectCategoryTitle
+                //val selectCategoryTitle = categoryTitleArrayList[position]
+                binding.categoryTv.text = categoryTitleArrayList[position]
             }
             .show()
     }

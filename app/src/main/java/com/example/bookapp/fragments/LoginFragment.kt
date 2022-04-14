@@ -23,8 +23,6 @@ class LoginFragment : Fragment() {
     private lateinit var progressDialog: ProgressDialog
     private lateinit var loginUserViewModel: LoginUserViewModel
     private lateinit var loginUserRepositoryImpl: LoginUserRepositoryImpl
-    //private var email = ""
-    //private var password = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

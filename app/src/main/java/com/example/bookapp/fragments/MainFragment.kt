@@ -60,10 +60,10 @@ class MainFragment : Fragment() {
         checkUserViewModel.modelsLiveData.observe(viewLifecycleOwner){
             Log.d("TAG11", "checkUser it $it")
             if (it == "user") {
-                Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
                 navigator().showDashboardUserFragment()
             } else if (it == "admin") {
-                Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
                 navigator().showDashboardAdminFragment()
             }
         }

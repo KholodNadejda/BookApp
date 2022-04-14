@@ -21,7 +21,6 @@ class ForgotPasswordFragment : Fragment() {
     private lateinit var progressDialog: ProgressDialog
     private lateinit var recoverPasswordViewModel: RecoverPasswordViewModel
     private lateinit var recoverPasswordRepositoryImpl: RecoverPasswordRepositoryImpl
-    //private var email = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

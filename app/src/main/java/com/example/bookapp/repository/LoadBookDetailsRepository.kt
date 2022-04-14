@@ -40,8 +40,9 @@ class LoadBookDetailsRepositoryImpl(private var bookId: String, private var cate
                     models.add(viewsCount)
                     models.add(downloadsCount)
                     models.add(date)
+                    models.add(bookUrl)
                     result.value = models
-                    Log.d("loadBookDetails", " ${result.value?.get(0)}  ${result.value?.get(1)}  ${result.value?.get(2)}  ${result.value?.get(3)}  ${result.value?.get(4)}")
+                    Log.d("loadBookDetails", " ${result.value?.get(0)}  ${result.value?.get(1)}  ${result.value?.get(2)}  ${result.value?.get(3)}  ${result.value?.get(4)} ${result.value?.get(5)}")
                 }
                 override fun onCancelled(error: DatabaseError) {
                 }
