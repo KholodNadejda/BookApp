@@ -18,8 +18,8 @@ interface CheckUserRepository {
 class CheckUserRepositoryImpl: CheckUserRepository {
     private var userType = MutableLiveData<String>()
     private var userName = MutableLiveData<String>()
-    //private var userLogout = MutableLiveData<Boolean>()
-    init {
+
+    private fun loadInfoUser(){
         val ref = FirebaseDatabase.getInstance().reference
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         Log.d("TAG11", "checkUser impl ${firebaseUser.toString()}")
@@ -42,11 +42,14 @@ class CheckUserRepositoryImpl: CheckUserRepository {
         }
         ref.keepSynced(true)
     }
+
     override fun checkUser(): MutableLiveData<String> {
+        loadInfoUser()
         return userType
     }
 
     override fun checkUserName(): MutableLiveData<String> {
+        loadInfoUser()
         return userName
     }
 
