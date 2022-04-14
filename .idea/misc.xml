@@ -30,17 +30,23 @@
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/drawable/tab_background_selector.xml" value="0.234" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/drawable/tab_background_unselected.xml" value="0.234" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/drawable/tab_selector.xml" value="0.234" />
+        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/activity_main.xml" value="0.2609375" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/activity_pdf_list_admin.xml" value="0.25" />
+        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/activity_splash.xml" value="0.2609375" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_books_user.xml" value="0.17447916666666666" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_category_add.xml" value="0.28125" />
-        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_dashboard_admin.xml" value="0.17447916666666666" />
+        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_dashboard_admin.xml" value="0.25" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_dashboard_user.xml" value="0.22760416666666666" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_forgot_password.xml" value="0.5" />
-        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_login.xml" value="0.13489583333333333" />
+        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_main.xml" value="0.2609375" />
+        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_pdf_add.xml" value="0.2609375" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_pdf_detail.xml" value="0.2" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_pdf_edit.xml" value="0.25" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_pdf_list_admin.xml" value="0.17447916666666666" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_pdf_view.xml" value="0.22" />
+        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/fragment_register.xml" value="0.2609375" />
+        <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/row_category.xml" value="0.2609375" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/row_pdf_admin.xml" value="0.17447916666666666" />
         <entry key="..\:/Users/n.holod/AndroidStudioProjects/BookApp/app/src/main/res/layout/row_pdf_user.xml" value="0.25" />
       </map>

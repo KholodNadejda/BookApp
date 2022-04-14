@@ -52,12 +52,12 @@ class AdapterPdfUser : RecyclerView.Adapter<AdapterPdfUser.HolderPdfUser>, Filte
 
         MyApplication.loadCategory(categoryId, holder.categoryTv)
         // MyApplication.loadPdfFromUrlSingPage(pdfUrl, title, holder.pdfView, holder.progressBar, null)
-        MyApplication.loadPdfSize(url, title, holder.sizeTv)
+        MyApplication.loadPdfSize(url, holder.sizeTv)
 
         holder.itemView.setOnClickListener { p0 ->
             val bundle = Bundle()
             bundle.putString("bookId", bookId)
-            var frag = PdfDetailFragment()
+            val frag = PdfDetailFragment()
             frag.arguments = bundle
             val activity = p0!!.context as AppCompatActivity
             activity.supportFragmentManager.beginTransaction()

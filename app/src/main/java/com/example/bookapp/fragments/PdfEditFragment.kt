@@ -23,11 +23,8 @@ class PdfEditFragment : Fragment() {
 
     private lateinit var binding: FragmentPdfEditBinding
 
-    private var bookId = ""
     private var selectCategoryId = ""
-    private var selectCategoryTitle = ""
-    private var title = ""
-    private var description = ""
+
     private lateinit var categoryTitleArrayList: ArrayList<String>
     private lateinit var categoryIdArrayList: ArrayList<String>
     private lateinit var updatePdfViewModel: UpdatePdfViewModel
@@ -51,7 +48,7 @@ class PdfEditFragment : Fragment() {
 
         binding = FragmentPdfEditBinding.inflate(layoutInflater)
 
-        bookId = this.requireArguments().getString("bookId").toString()
+        val bookId = this.requireArguments().getString("bookId").toString()
 
         processDialog = ProgressDialog(requireActivity())
         processDialog.setTitle("Please wait")
@@ -69,17 +66,17 @@ class PdfEditFragment : Fragment() {
             if(!MyApplication.hasConnection(requireActivity())){
                 Toast.makeText(requireActivity(), "Not internet connection", Toast.LENGTH_SHORT).show()
             } else {
-                validateData()
+                validateData(bookId)
             }
         }
 
         loadCategories()
-        loadBookInfo()
+        loadBookInfo(bookId)
 
         return binding.root
     }
 
-    private fun loadBookInfo() {
+    private fun loadBookInfo(bookId: String) {
         Log.d(TAG, "loadBookInfo: Loading bool info")
 
         loadBookInfoRepositoryImpl = LoadBookInfoRepositoryImpl(bookId)
@@ -98,31 +95,29 @@ class PdfEditFragment : Fragment() {
             binding.descriptionEt.setText(it)
         }
         loadBookInfoCategoryViewModel.modelsLiveData.observe(viewLifecycleOwner){
-            binding.categoryTv.text = it
+            binding.categoryTv.text = it[0]
+            selectCategoryId = it[1]
         }
     }
 
-    private fun validateData() {
-        title = binding.titleEt.text.toString().trim()
-        description = binding.descriptionEt.text.toString().trim()
-
+    private fun validateData(bookId: String) {
         when {
-            title.isEmpty() -> {
+            binding.titleEt.text.toString().trim().isEmpty() -> {
                 Toast.makeText(requireActivity(), "Enter title", Toast.LENGTH_SHORT).show()
             }
-            description.isEmpty() -> {
+            binding.descriptionEt.text.toString().trim().isEmpty() -> {
                 Toast.makeText(requireActivity(), "Enter description", Toast.LENGTH_SHORT).show()
             }
-            selectCategoryId.isEmpty() -> {
+            binding.categoryTv.text.trim().isEmpty() -> {
                 Toast.makeText(requireActivity(), "Pick Category", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                updatePdf()
+                updatePdf(bookId,  binding.titleEt.text.toString().trim(), binding.descriptionEt.text.toString().trim())
             }
         }
     }
 
-    private fun updatePdf() {
+    private fun updatePdf(bookId: String, title: String, description: String) {
         processDialog.setMessage("Updating book info")
         processDialog.show()
 
@@ -150,9 +145,8 @@ class PdfEditFragment : Fragment() {
         builder.setTitle("Choose Category")
             .setItems(categoriesArray) { dialopg, position ->
                 selectCategoryId = categoryIdArrayList[position]
-                selectCategoryTitle = categoryTitleArrayList[position]
-
-                binding.categoryTv.text = selectCategoryTitle
+                //val selectCategoryTitle = categoryTitleArrayList[position]
+                binding.categoryTv.text = categoryTitleArrayList[position]
             }
             .show()
     }

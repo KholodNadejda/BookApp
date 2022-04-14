@@ -56,7 +56,7 @@ class AdapterPdfAdmin
 
         MyApplication.loadCategory(categoryId, holder.categoryTv)
         // MyApplication.loadPdfFromUrlSingPage(pdfUrl, title, holder.pdfView, holder.progressBar, null)
-        MyApplication.loadPdfSize(pdfUrl, title, holder.sizeTv)
+        MyApplication.loadPdfSize(pdfUrl, holder.sizeTv)
 
         holder.moreBtn.setOnClickListener {
             moreOptionDialog(model, holder)
@@ -76,9 +76,6 @@ class AdapterPdfAdmin
     }
 
     private fun moreOptionDialog(model: ModelPdf, holder: HolderPdfAdmin) {
-        val bookId = model.id
-        val bookUrl = model.url
-        val bookTitle = model.title
 
         val options = arrayOf("Edit", "Delete")
 
@@ -87,7 +84,7 @@ class AdapterPdfAdmin
             .setItems(options) { _, position ->
                 if (position == 0) {
                     val bundle = Bundle()
-                    bundle.putString("bookId", bookId)
+                    bundle.putString("bookId", model.id)
                     val frag = PdfEditFragment()
                     frag.arguments = bundle
                     val activity = context as AppCompatActivity
@@ -99,7 +96,7 @@ class AdapterPdfAdmin
                     if(!MyApplication.hasConnection(context)){
                         Toast.makeText(context, "Not internet connection", Toast.LENGTH_SHORT).show()
                     } else {
-                        MyApplication.deleteBook(context, bookId, bookUrl, bookTitle)
+                        MyApplication.deleteBook(context, model)
                     }
                 }
             }

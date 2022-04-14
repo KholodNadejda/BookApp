@@ -37,7 +37,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="Edit book info"
+            android:text="@string/edit_book_info"
             android:textColor="@color/white"
             android:textSize="28sp" />
 
@@ -67,7 +67,7 @@
                     android:background="@drawable/shape_edittext01"
                     android:drawableStart="@drawable/ic_pdf_gray"
                     android:drawablePadding="10dp"
-                    android:hint="Book Title"
+                    android:hint="@string/book_title"
                     android:inputType="textPersonName|textCapSentences"
                     android:padding="10dp"
                     android:textColor="@color/black"
@@ -93,7 +93,7 @@
                     android:background="@drawable/shape_edittext01"
                     android:drawableStart="@drawable/ic_pdf_gray"
                     android:drawablePadding="10dp"
-                    android:hint="Book description"
+                    android:hint="@string/book_description"
                     android:inputType="textMultiLine|textCapSentences"
                     android:padding="10dp"
                     android:textColor="@color/black"
@@ -115,7 +115,7 @@
                 android:drawableEnd="@drawable/ic_down_gray"
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
-                android:hint="Book category"
+                android:hint="@string/book_category"
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray01"
@@ -130,7 +130,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
                 android:background="@drawable/shape_button01"
-                android:text="Update"
+                android:text="@string/update"
                 android:textColor="@color/white" />
 
         </RelativeLayout>

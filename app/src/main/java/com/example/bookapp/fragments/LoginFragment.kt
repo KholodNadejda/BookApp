@@ -23,8 +23,6 @@ class LoginFragment : Fragment() {
     private lateinit var progressDialog: ProgressDialog
     private lateinit var loginUserViewModel: LoginUserViewModel
     private lateinit var loginUserRepositoryImpl: LoginUserRepositoryImpl
-    private var email = ""
-    private var password = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,19 +54,19 @@ class LoginFragment : Fragment() {
     }
 
     private fun validateData() {
-        email = binding.emailEt.text.toString().trim()
-        password = binding.passwordEt.text.toString().trim()
+        val email = binding.emailEt.text.toString().trim()
+        val password = binding.passwordEt.text.toString().trim()
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(requireActivity(), "Invalid Email format", Toast.LENGTH_SHORT).show()
         } else if (password.isEmpty()) {
             Toast.makeText(requireActivity(), "Enter password", Toast.LENGTH_SHORT).show()
         } else {
-            loginUser()
+            loginUser(email, password)
         }
     }
 
-    private fun loginUser() {
+    private fun loginUser(email: String, password: String) {
         loginUserRepositoryImpl = LoginUserRepositoryImpl(email, password)
         loginUserViewModel = ViewModelProvider(this, LoginUserViewModelFactory(loginUserRepositoryImpl)
         )[LoginUserViewModel::class.java]

@@ -18,7 +18,7 @@
         android:background="@color/white"
         android:drawableStart="@drawable/ic_search_gray"
         android:drawablePadding="10dp"
-        android:hint="Search"
+        android:hint="@string/search"
         android:padding="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/gray02" />

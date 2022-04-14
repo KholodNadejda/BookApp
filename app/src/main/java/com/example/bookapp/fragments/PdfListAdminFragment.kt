@@ -21,8 +21,6 @@ class PdfListAdminFragment : Fragment() {
 
     private lateinit var binding: FragmentPdfListAdminBinding
 
-    private var categoryId = ""
-    private var category = ""
     private lateinit var adapterPdfAdmin: AdapterPdfAdmin
     private lateinit var viewModel: PdfListViewModel
     private lateinit var pdfListRepositoryImpl: PdfListRepositoryImpl
@@ -33,8 +31,8 @@ class PdfListAdminFragment : Fragment() {
     ): View {
         binding = FragmentPdfListAdminBinding.inflate(layoutInflater)
 
-        categoryId = this.requireArguments().getString("categoryID").toString()
-        category = this.requireArguments().getString("category").toString()
+        val categoryId = this.requireArguments().getString("categoryID").toString()
+        val category = this.requireArguments().getString("category").toString()
         binding.subTitleTv.text = category
 
         pdfListRepositoryImpl = PdfListRepositoryImpl(categoryId)
@@ -61,11 +59,9 @@ class PdfListAdminFragment : Fragment() {
         }
 
         return binding.root
-
     }
 
     private fun loadPdfList() {
-
         viewModel.modelsLiveData.observe(viewLifecycleOwner){
             adapterPdfAdmin = AdapterPdfAdmin(requireActivity(), it)
             binding.booksRv.adapter = adapterPdfAdmin

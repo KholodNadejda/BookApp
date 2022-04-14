@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
-            android:text="Dashboard User"
+            android:text="@string/dashboard_user"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/titleTv"
             android:layout_centerHorizontal="true"
-            android:text="a@example.com"
+            android:text="@string/a_example_com"
             android:textColor="@color/black" />
 
         <ImageButton

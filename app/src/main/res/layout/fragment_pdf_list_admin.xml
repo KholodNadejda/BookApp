@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
-            android:text="Books"
+            android:text="@string/books"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/titleTv"
             android:layout_centerHorizontal="true"
-            android:text="Category"
+            android:text="@string/category"
             android:textColor="@color/white" />
 
     </RelativeLayout>
@@ -55,7 +55,7 @@
         android:background="@color/white"
         android:drawableStart="@drawable/ic_search_gray"
         android:drawablePadding="10dp"
-        android:hint="Search"
+        android:hint="@string/search"
         android:padding="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/gray02" />

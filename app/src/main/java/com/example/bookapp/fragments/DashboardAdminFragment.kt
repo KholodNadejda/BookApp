@@ -40,7 +40,6 @@ class DashboardAdminFragment : Fragment() {
         checkUserNameViewModel = ViewModelProvider(this,
             CheckUserNameViewModelFactory(checkUserRepositoryImpl)
         )[CheckUserNameViewModel::class.java]
-        logoutUserNameViewModel = ViewModelProvider(this, LogoutUserViewModelFactory(checkUserRepositoryImpl))[LogoutUserViewModel::class.java]
 
         checkUser()
 
@@ -62,6 +61,7 @@ class DashboardAdminFragment : Fragment() {
         }
 
         binding.logOutBtn.setOnClickListener {
+            logoutUserNameViewModel = ViewModelProvider(this, LogoutUserViewModelFactory(checkUserRepositoryImpl))[LogoutUserViewModel::class.java]
             logoutUserNameViewModel.modelsLiveData.observe(viewLifecycleOwner){
                 if (it == true){
                     navigator().goToStart()

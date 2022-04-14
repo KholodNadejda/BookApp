@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Book Title" />
+            android:text="@string/book_title" />
 
         <TextView
             android:id="@+id/descriptionTv"
@@ -39,7 +39,7 @@
             android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:text="Book description" />
+            android:text="@string/book_description" />
 
         <TextView
             android:id="@+id/categoryTv"
@@ -50,7 +50,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:maxLines="1"
-            android:text="Category" />
+            android:text="@string/category" />
 
         <TextView
             android:id="@+id/sizeTv"
@@ -59,7 +59,7 @@
             android:layout_below="@id/descriptionTv"
             android:layout_alignParentBottom="true"
             android:maxLines="1"
-            android:text="13MB" />
+            android:text="@string/_0mb" />
 
         <TextView
             android:id="@+id/dateTv"
@@ -71,7 +71,7 @@
             android:layout_toStartOf="@id/categoryTv"
             android:layout_toEndOf="@id/sizeTv"
             android:maxLines="1"
-            android:text="dd/MM/yyyy"
+            android:text="@string/dd_mm_yyyy"
             android:textAlignment="center" />
 
     </RelativeLayout>

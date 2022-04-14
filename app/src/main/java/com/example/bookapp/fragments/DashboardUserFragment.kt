@@ -47,11 +47,11 @@ class DashboardUserFragment : Fragment() {
             CheckUserNameViewModelFactory(checkUserRepositoryImpl)
         )[CheckUserNameViewModel::class.java]
         viewPagerAdapterRepositoryImpl = ViewPagerAdapterRepositoryImpl(viewPageAdapter)
-        logoutUserNameViewModel = ViewModelProvider(this, LogoutUserViewModelFactory(checkUserRepositoryImpl))[LogoutUserViewModel::class.java]
         viewPageAdapterViewModel = ViewModelProvider(this, ViewPagerAdapterViewModelFactory(viewPagerAdapterRepositoryImpl)
         )[ViewPagerAdapterViewModel::class.java]
 
         checkUser()
+
         if(!MyApplication.hasConnection(requireActivity())){
             Toast.makeText(requireActivity(), "Not internet connection", Toast.LENGTH_SHORT).show()
         }
@@ -60,6 +60,7 @@ class DashboardUserFragment : Fragment() {
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         binding.logOutBtn.setOnClickListener {
+            logoutUserNameViewModel = ViewModelProvider(this, LogoutUserViewModelFactory(checkUserRepositoryImpl))[LogoutUserViewModel::class.java]
             logoutUserNameViewModel.modelsLiveData.observe(viewLifecycleOwner){
                 if (it == true){
                     navigator().goToStart()

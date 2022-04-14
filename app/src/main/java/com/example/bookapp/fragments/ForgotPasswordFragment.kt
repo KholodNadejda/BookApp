@@ -21,7 +21,6 @@ class ForgotPasswordFragment : Fragment() {
     private lateinit var progressDialog: ProgressDialog
     private lateinit var recoverPasswordViewModel: RecoverPasswordViewModel
     private lateinit var recoverPasswordRepositoryImpl: RecoverPasswordRepositoryImpl
-    private var email = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,17 +44,17 @@ class ForgotPasswordFragment : Fragment() {
     }
 
     private fun validateData() {
-        email = binding.emailEt.text.toString().trim()
+        val email = binding.emailEt.text.toString().trim()
         if (email.isEmpty()) {
             Toast.makeText(requireActivity(), "Enter email", Toast.LENGTH_SHORT).show()
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(requireActivity(), "Invalidate email pattern", Toast.LENGTH_SHORT).show()
         } else {
-            recoverPassword()
+            recoverPassword(email)
         }
     }
 
-    private fun recoverPassword() {
+    private fun recoverPassword(email: String) {
         recoverPasswordRepositoryImpl = RecoverPasswordRepositoryImpl(email)
         recoverPasswordViewModel = ViewModelProvider(this, RecoverPasswordViewModelFactory(recoverPasswordRepositoryImpl)
         )[RecoverPasswordViewModel::class.java]

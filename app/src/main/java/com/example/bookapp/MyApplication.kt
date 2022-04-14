@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import com.example.bookapp.model.ModelCategory
+import com.example.bookapp.model.ModelPdf
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -32,7 +33,7 @@ class MyApplication : Application() {
             return DateFormat.format("dd/MM/yyyy", cal).toString()
         }
 
-        fun loadPdfSize(pdfUrl: String, pdfTitle: String, sizeTv: TextView) {
+        fun loadPdfSize(pdfUrl: String, sizeTv: TextView) {
             val TAG = "PDF_SIZE_TAG"
             val ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl)
             ref.metadata
@@ -43,12 +44,16 @@ class MyApplication : Application() {
 
                     val kb = bytes / 1024
                     val mb = kb / 1024
-                    if (mb >= 1) {
-                        sizeTv.text = "${String.format("%.2f", mb)} MB"
-                    } else if (kb >= 1) {
-                        sizeTv.text = "${String.format("%.2f", kb)} KB"
-                    } else {
-                        sizeTv.text = "${String.format("%.2f", bytes)} bytes"
+                    when {
+                        mb >= 1 -> {
+                            sizeTv.text = "${String.format("%.2f", mb)} MB"
+                        }
+                        kb >= 1 -> {
+                            sizeTv.text = "${String.format("%.2f", kb)} KB"
+                        }
+                        else -> {
+                            sizeTv.text = "${String.format("%.2f", bytes)} bytes"
+                        }
                     }
                 }
                 .addOnFailureListener { e ->
@@ -93,24 +98,24 @@ class MyApplication : Application() {
                     }
                 })
         }
-        fun deleteBook(context: Context, bookId: String, bookUrl:String, bookTitle: String){
+        fun deleteBook(context: Context, model: ModelPdf){
 
             val TAG = "DELETE_BOOK_TAG"
-            Log.d(TAG, "deleteBook: deleting...")
+            Log.d(TAG, "deleteBook: deleting... ${model.id} ${model.title} ${model.url}")
             val progressDialog = ProgressDialog(context)
             progressDialog.setTitle("Please wait")
-            progressDialog.setMessage("Delete $bookTitle")
+            progressDialog.setMessage("Delete ${model.title}")
             progressDialog.setCanceledOnTouchOutside(false)
             progressDialog.show()
 
             Log.d(TAG, "deleteBook: deleting from storage")
-            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(bookUrl)
+            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(model.url)
             storageRef.delete()
                 .addOnSuccessListener {
                     Log.d(TAG, "deleteBook: delete from storage")
 
-                    val ref = FirebaseDatabase.getInstance().getReference("Book")
-                    ref.child(bookId)
+                    val ref = FirebaseDatabase.getInstance().getReference("Books")
+                    ref.child(model.id)
                         .removeValue()
                         .addOnSuccessListener {
                             progressDialog.dismiss()

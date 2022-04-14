@@ -40,7 +40,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-condensed-medium"
-            android:text="Create New Account"
+            android:text="@string/create_new_account"
             android:textColor="@color/black"
             android:textSize="28sp" />
 
@@ -70,7 +70,7 @@
                     android:background="@drawable/shape_edittext01"
                     android:drawableStart="@drawable/ic_person_gray"
                     android:drawablePadding="10dp"
-                    android:hint="Name"
+                    android:hint="@string/name"
                     android:inputType="textPersonName|textCapWords"
                     android:padding="10dp"
                     android:textColor="@color/black"
@@ -92,7 +92,7 @@
                     android:background="@drawable/shape_edittext01"
                     android:drawableStart="@drawable/ic_email_gray"
                     android:drawablePadding="10dp"
-                    android:hint="Email"
+                    android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:padding="10dp"
                     android:textColor="@color/black"
@@ -115,7 +115,7 @@
                     android:background="@drawable/shape_edittext01"
                     android:drawableStart="@drawable/ic_lock_gray"
                     android:drawablePadding="5dp"
-                    android:hint="Password"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:padding="10dp"
                     android:textColor="@color/black"
@@ -138,7 +138,7 @@
                     android:background="@drawable/shape_edittext01"
                     android:drawableStart="@drawable/ic_lock_gray"
                     android:drawablePadding="10dp"
-                    android:hint="Confirm Password"
+                    android:hint="@string/confirm_password"
                     android:inputType="textPassword"
                     android:padding="10dp"
                     android:textColor="@color/black"
@@ -152,7 +152,7 @@
                 android:layout_below="@id/confirmPasswordTil"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/shape_button01"
-                android:text="Register"
+                android:text="@string/register"
                 android:textColor="@color/black" />
 
         </RelativeLayout>
